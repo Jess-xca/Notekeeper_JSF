@@ -4,7 +4,7 @@
 **Student / author:** Jessica Irakoze  
 **Repository (public GitHub link):** https://github.com/Jess-xca/Notekeeper_JSF  
 **Video link (Google Vid, screen + camera, 5–10 minutes):** `[PASTE GOOGLE VID LINK HERE]`  
-**Technology stack for this phase:** JSF, Hibernate, H2, Maven, Jakarta Validation  
+**Technology stack for this phase:** JSF, Hibernate, PostgreSQL, Maven, Jakarta Validation  
 
 ---
 
@@ -138,7 +138,7 @@ Phase-1 TO-BE slice (what is implemented now):
 flowchart LR
     A[Home page] --> B[Tag CRUD]
     A --> C[Workspace CRUD]
-    B --> D[(H2 database via Hibernate)]
+    B --> D[(PostgreSQL database via Hibernate)]
     C --> D
     B --> E[JSF + Bean + Custom validation]
     C --> E
@@ -192,11 +192,11 @@ flowchart LR
 | **Security** | Full system uses hashed passwords, JWT, 2FA, and role checks. Phase-1 validates input to reduce bad or malicious data. |
 | **Maintainability** | Layered design: model, DAO, bean, validator, and XHTML views. |
 | **Scalability** | Entity model supports many users, workspaces, and pages; later API/database can grow independently of the JSF prototype. |
-| **Portability** | Maven WAR can run on Tomcat 10 / Jakarta EE containers; H2 is used for local demo. |
+| **Portability** | Maven WAR can run on Tomcat 10 / Jakarta EE containers; PostgreSQL is used for persistence. |
 | **Integrity** | Unique tag names, required fields, and reserved workspace names protect data quality. |
 | **Reusability** | Shared CSS, DAO pattern, and validators can be reused for later entities. |
 | **Testability** | DAO operations and validators are isolated from the view, so they can be tested independently. |
-| **Efficiency** | Only required fields are loaded in list screens; H2 file database is lightweight for demo. |
+| **Efficiency** | Only required fields are loaded in list screens; PostgreSQL stores Tag and Workspace records. |
 | **Adaptability** | The same entities map to the Spring Boot backend, so the JSF prototype can evolve toward the full product. |
 
 ---
@@ -403,7 +403,7 @@ classDiagram
 
 ### 9.5 How to run the practical project
 
-Requirements: JDK 17 and Maven.
+Requirements: JDK 17, Maven, and PostgreSQL (`notekeeper_db`). Set `DATABASE_PASSWORD` before starting.
 
 ```bash
 cd JSF
