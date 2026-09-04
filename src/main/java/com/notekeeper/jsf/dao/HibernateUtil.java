@@ -12,7 +12,8 @@ public final class HibernateUtil {
 
     private static SessionFactory buildSessionFactory() {
         try {
-            Configuration configuration = new Configuration().configure("hibernate.xml");
+            Configuration configuration = new Configuration();
+            configuration.configure();
             String password = System.getenv("DATABASE_PASSWORD");
             if (password != null && !password.isBlank()) {
                 configuration.setProperty("hibernate.connection.password", password);
