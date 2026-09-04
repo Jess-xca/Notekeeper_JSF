@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>NoteKeeper | Phase-1 Proposal</title>
+    <h:outputStylesheet name="css/app.css"/>
+    <!-- Internal CSS -->
+    <style>
+        .hero-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e3a8a;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .hero-card a {
+            font-weight: 700;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+    </style>
+</h:head>
+<h:body>
+    <div class="nk-shell">
+        <header class="nk-header">
+            <div class="nk-brand">
+                <h1>NoteKeeper</h1>
+                <p>Collaborative note-taking system - Phase-1 JSF prototype</p>
+            </div>
+            <nav class="nk-nav">
+                <h:link outcome="home" value="Home"/>
+                <h:link outcome="tags" value="Tags CRUD"/>
+                <h:link outcome="workspaces" value="Workspaces CRUD"/>
+            </nav>
+        </header>
+
+        <section class="nk-card">
+            <span class="hero-badge">Phase-1 Practical Project</span>
+            <h2 style="margin-top: 8px;">JSF + Hibernate CRUD Demonstration</h2>
+            <p>
+                This prototype implements full Create, Read, Update, and Delete operations
+                for two NoteKeeper entities: <strong>Tag</strong> and <strong>Workspace</strong>.
+                It uses Hibernate for persistence and three validation types plus three CSS types.
+            </p>
+        </section>
+
+        <div class="nk-home-grid">
+            <section class="nk-card hero-card">
+                <h3>1. Tag Management</h3>
+                <p>Create colored labels used to organize notes. Validation covers name uniqueness, length, and hex color format.</p>
+                <h:link outcome="tags" value="Open Tag CRUD"/>
+            </section>
+            <section class="nk-card hero-card">
+                <h3>2. Workspace Management</h3>
+                <p>Create workspaces that group notes for personal or team use. Validation covers reserved names, length, and required owner.</p>
+                <h:link outcome="workspaces" value="Open Workspace CRUD"/>
+            </section>
+        </div>
+
+        <section class="nk-card">
+            <h3>Assignment checklist demonstrated here</h3>
+            <ul>
+                <li>JSF pages with backing beans</li>
+                <li>Hibernate mapping and CRUD through DAOs</li>
+                <li>Bean Validation, JSF built-in validators, and custom validators</li>
+                <li>External CSS (<code>app.css</code>), internal CSS (this page), and inline CSS (page titles)</li>
+            </ul>
+        </section>
+
+        <footer class="nk-footer">
+            GitHub: https://github.com/Jess-xca/Notekeeper_JSF
+        </footer>
+    </div>
+</h:body>
+</html>
