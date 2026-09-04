@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>NoteKeeper | Workspace CRUD</title>
+    <h:outputStylesheet name="css/app.css"/>
+    <!-- Internal CSS for this page only -->
+    <style>
+        .workspace-hint {
+            font-size: 0.82rem;
+            color: #475569;
+        }
+        .default-yes {
+            color: #047857;
+            font-weight: 700;
+        }
+    </style>
+</h:head>
+<h:body>
+    <div class="nk-shell">
+        <header class="nk-header">
+            <div class="nk-brand">
+                <h1>Workspace CRUD</h1>
+                <p>Create, read, update, and delete NoteKeeper workspaces</p>
+            </div>
+            <nav class="nk-nav">
+                <h:link outcome="home" value="Home"/>
+                <h:link outcome="tags" value="Tags"/>
+            </nav>
+        </header>
+
+        <h:form id="workspaceForm">
+            <h:messages globalOnly="true" styleClass="nk-messages" infoClass="nk-messages" errorClass="nk-error"/>
+
+            <section class="nk-card">
+                <h2 style="margin-top: 0;">#{workspaceBean.editing ? 'Update Workspace' : 'Create Workspace'}</h2>
+                <div class="nk-form-grid">
+                    <div class="nk-field">
+                        <h:outputLabel for="wsName" value="Workspace name *"/>
+                        <h:inputText id="wsName" value="#{workspaceBean.workspace.name}" required="true"
+                                     requiredMessage="Workspace name is required.">
+                            <f:validateLength minimum="3" maximum="100"/>
+                            <f:validator validatorId="workspaceNameValidator"/>
+                        </h:inputText>
+                        <span class="workspace-hint">Reserved names admin and system are not allowed.</span>
+                        <h:message for="wsName" styleClass="nk-error"/>
+                    </div>
+
+                    <div class="nk-field">
+                        <h:outputLabel for="wsOwner" value="Owner name *"/>
+                        <h:inputText id="wsOwner" value="#{workspaceBean.workspace.ownerName}" required="true"
+                                     requiredMessage="Owner name is required.">
+                            <f:validateLength minimum="2" maximum="80"/>
+                        </h:inputText>
+                        <h:message for="wsOwner" styleClass="nk-error"/>
+                    </div>
+
+                    <div class="nk-field">
+                        <h:outputLabel for="wsIcon" value="Icon"/>
+                        <h:inputText id="wsIcon" value="#{workspaceBean.workspace.icon}">
+                            <f:validateLength maximum="10"/>
+                        </h:inputText>
+                        <h:message for="wsIcon" styleClass="nk-error"/>
+                    </div>
+
+                    <div class="nk-field">
+                        <h:outputLabel for="wsDefault" value="Default workspace"/>
+                        <h:selectBooleanCheckbox id="wsDefault" value="#{workspaceBean.workspace.isDefault}"/>
+                    </div>
+
+                    <div class="nk-field full">
+                        <h:outputLabel for="wsDescription" value="Description"/>
+                        <h:inputTextarea id="wsDescription" value="#{workspaceBean.workspace.description}" rows="3">
+                            <f:validateLength maximum="500"/>
+                        </h:inputTextarea>
+                        <h:message for="wsDescription" styleClass="nk-error"/>
+                    </div>
+                </div>
+
+                <div class="nk-actions">
+                    <h:commandButton value="#{workspaceBean.editing ? 'Update Workspace' : 'Save Workspace'}"
+                                     action="#{workspaceBean.save}" styleClass="nk-btn nk-btn-primary"/>
+                    <h:commandButton value="Clear" action="#{workspaceBean.reset}" immediate="true"
+                                     styleClass="nk-btn nk-btn-secondary"/>
+                </div>
+            </section>
+
+            <section class="nk-card">
+                <h2 style="margin-top: 0;">All Workspaces</h2>
+                <h:dataTable value="#{workspaceBean.workspaces}" var="item" styleClass="nk-table"
+                             rendered="#{not empty workspaceBean.workspaces}">
+                    <h:column>
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputText value="#{item.icon} #{item.name}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Owner</f:facet>
+                        <h:outputText value="#{item.ownerName}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Description</f:facet>
+                        <h:outputText value="#{item.description}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Default</f:facet>
+                        <h:outputText value="#{item.isDefault ? 'Yes' : 'No'}"
+                                      styleClass="#{item.isDefault ? 'default-yes' : ''}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:commandButton value="Edit" action="#{workspaceBean.edit(item)}"
+                                         styleClass="nk-btn nk-btn-secondary"/>
+                        <h:commandButton value="Delete" action="#{workspaceBean.delete(item)}"
+                                         styleClass="nk-btn nk-btn-danger"
+                                         onclick="return confirm('Delete this workspace?');"/>
+                    </h:column>
+                </h:dataTable>
+                <h:outputText value="No workspaces yet. Create the first workspace above."
+                              rendered="#{empty workspaceBean.workspaces}"/>
+            </section>
+        </h:form>
+    </div>
+</h:body>
+</html>
