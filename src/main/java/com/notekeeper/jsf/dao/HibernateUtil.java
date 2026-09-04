@@ -13,6 +13,10 @@ public final class HibernateUtil {
     private static SessionFactory buildSessionFactory() {
         try {
             Configuration configuration = new Configuration().configure("hibernate.xml");
+            String password = System.getenv("DATABASE_PASSWORD");
+            if (password != null && !password.isBlank()) {
+                configuration.setProperty("hibernate.connection.password", password);
+            }
             return configuration.buildSessionFactory();
         } catch (Exception ex) {
             throw new ExceptionInInitializerError("Unable to create Hibernate SessionFactory: " + ex.getMessage());
