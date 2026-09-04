@@ -171,7 +171,7 @@ flowchart LR
 | P1-02 | Create, read, update, and delete workspaces | Implemented |
 | P1-03 | Validate tag name and color | Implemented |
 | P1-04 | Validate workspace name, owner, and description | Implemented |
-| P1-05 | Persist records with Hibernate using `hibernate.xml` | Implemented |
+| P1-05 | Persist records with Hibernate using `hibernate.cfg.xml` and `hibernate.xml` | Implemented |
 
 ### 6.3 Non-functional / business constraints
 
