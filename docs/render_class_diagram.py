@@ -1,17 +1,18 @@
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 
-W, H = 2000, 1220
+W, H = 2000, 1280
 BG = (255, 255, 255)
 INK = (17, 24, 39)
 MUTED = (75, 85, 99)
-LINE = (148, 163, 175)
+LINE = (100, 116, 139)
 HDR = (30, 58, 95)
 HDR_FG = (255, 255, 255)
 BOX = (255, 255, 255)
 BORDER = (148, 163, 184)
 ENUM_HDR = (55, 65, 81)
 ENUM_BG = (249, 250, 251)
+LEGEND_BG = (248, 250, 252)
 
 img = Image.new("RGB", (W, H), BG)
 draw = ImageDraw.Draw(img)
@@ -29,10 +30,11 @@ def font(size, bold=False):
     return ImageFont.load_default()
 
 
-FT = font(24, True)
+FT = font(26, True)
 FN = font(13, True)
 FB = font(11)
-FL = font(10)
+FL = font(11)
+FS = font(12)
 
 ROW = 16
 HEADER = 28
@@ -55,7 +57,7 @@ classes = {
             "twoFactorEnabled: Boolean",
             "createdAt: DateTime",
         ],
-        "pos": (40, 80),
+        "pos": (50, 90),
         "w": 250,
     },
     "UserProfile": {
@@ -67,7 +69,7 @@ classes = {
             "language: String",
             "updatedAt: DateTime",
         ],
-        "pos": (40, 340),
+        "pos": (50, 350),
         "w": 250,
     },
     "Location": {
@@ -78,7 +80,7 @@ classes = {
             "type: LocationType",
             "createdAt: DateTime",
         ],
-        "pos": (40, 540),
+        "pos": (50, 550),
         "w": 250,
     },
     "Workspace": {
@@ -90,12 +92,12 @@ classes = {
             "isDefault: Boolean",
             "createdAt: DateTime",
         ],
-        "pos": (420, 90),
+        "pos": (430, 90),
         "w": 250,
     },
     "WorkspaceMember": {
         "attrs": ["id: String", "role: WorkspaceRole", "joinedAt: DateTime"],
-        "pos": (420, 340),
+        "pos": (430, 340),
         "w": 250,
     },
     "Page": {
@@ -110,12 +112,12 @@ classes = {
             "createdAt: DateTime",
             "updatedAt: DateTime",
         ],
-        "pos": (820, 90),
+        "pos": (840, 90),
         "w": 260,
     },
     "PageShare": {
         "attrs": ["id: String", "permission: String", "sharedAt: DateTime"],
-        "pos": (820, 390),
+        "pos": (840, 390),
         "w": 260,
     },
     "Attachment": {
@@ -127,17 +129,17 @@ classes = {
             "filePath: String",
             "uploadedAt: DateTime",
         ],
-        "pos": (820, 560),
+        "pos": (840, 560),
         "w": 260,
     },
     "Tag": {
         "attrs": ["id: String", "name: String", "color: String", "createdAt: DateTime"],
-        "pos": (1180, 90),
+        "pos": (1200, 90),
         "w": 230,
     },
     "PageTag": {
         "attrs": ["id: String", "taggedAt: DateTime"],
-        "pos": (1180, 260),
+        "pos": (1200, 260),
         "w": 230,
     },
     "Notification": {
@@ -149,17 +151,17 @@ classes = {
             "isRead: Boolean",
             "createdAt: DateTime",
         ],
-        "pos": (1180, 410),
+        "pos": (1200, 410),
         "w": 230,
     },
     "TwoFactorCode": {
         "attrs": ["id: String", "code: String", "expiryDate: DateTime", "used: Boolean"],
-        "pos": (1520, 90),
+        "pos": (1540, 90),
         "w": 280,
     },
     "PasswordResetToken": {
         "attrs": ["id: String", "token: String", "expiryDate: DateTime", "used: Boolean"],
-        "pos": (1520, 270),
+        "pos": (1540, 270),
         "w": 280,
     },
 }
@@ -167,17 +169,17 @@ classes = {
 enums = {
     "WorkspaceRole": {
         "vals": ["OWNER", "EDITOR", "VIEWER"],
-        "pos": (420, 540),
-        "w": 200,
+        "pos": (430, 540),
+        "w": 210,
     },
     "NotificationType": {
         "vals": ["INFO", "SUCCESS", "WARNING", "ERROR", "SHARE", "WORKSPACE_INVITE"],
-        "pos": (1180, 630),
+        "pos": (1200, 640),
         "w": 230,
     },
     "LocationType": {
         "vals": ["COUNTRY", "PROVINCE", "DISTRICT", "SECTOR", "CELL", "VILLAGE"],
-        "pos": (40, 740),
+        "pos": (50, 760),
         "w": 250,
     },
 }
@@ -188,35 +190,58 @@ for c in enums.values():
     c["h"] = box_h(len(c["vals"]))
 
 
-def side_point(c, side, t=0.5):
+def attach(c, side, t=0.5):
+    """Exact point on the box border."""
     x, y = c["pos"]
     w, h = c["w"], c["h"]
-    t = max(0.1, min(0.9, t))
+    t = max(0.08, min(0.92, t))
     if side == "right":
-        return x + w, int(y + h * t)
+        return (x + w, int(y + h * t))
     if side == "left":
-        return x, int(y + h * t)
+        return (x, int(y + h * t))
     if side == "bottom":
-        return int(x + w * t), y + h
-    return int(x + w * t), y
+        return (int(x + w * t), y + h)
+    return (int(x + w * t), y)
 
 
-def draw_poly(pts):
-    draw.line(pts, fill=LINE, width=1)
+def link(points, width=2):
+    """Draw a polyline that reaches entity borders."""
+    draw.line(points, fill=LINE, width=width)
 
 
 def label_at(x, y, text):
     bb = draw.textbbox((0, 0), text, font=FL)
     tw, th = bb[2] - bb[0], bb[3] - bb[1]
     draw.rectangle(
-        [x - tw // 2 - 3, y - th // 2 - 1, x + tw // 2 + 3, y + th // 2 + 1],
+        [x - tw // 2 - 4, y - th // 2 - 2, x + tw // 2 + 4, y + th // 2 + 2],
         fill=BG,
     )
     draw.text((x - tw // 2, y - th // 2), text, font=FL, fill=MUTED)
 
 
-# Title only
-draw.text((40, 24), "NoteKeeper Domain Class Diagram", font=FT, fill=INK)
+def draw_class(name, c, is_enum=False):
+    x, y = c["pos"]
+    w, h = c["w"], c["h"]
+    items = c.get("attrs") or c.get("vals")
+    bg = ENUM_BG if is_enum else BOX
+    hdr = ENUM_HDR if is_enum else HDR
+    draw.rounded_rectangle([x, y, x + w, y + h], radius=6, fill=bg, outline=BORDER, width=2)
+    draw.rectangle([x + 2, y + 2, x + w - 2, y + HEADER], fill=hdr)
+    title = f"«enum» {name}" if is_enum else name
+    draw.text((x + 10, y + 6), title, font=FN, fill=HDR_FG)
+    draw.line([(x + 2, y + HEADER), (x + w - 2, y + HEADER)], fill=BORDER, width=1)
+    ay = y + HEADER + 8
+    prefix = "" if is_enum else "- "
+    for item in items:
+        draw.text((x + 12, ay), f"{prefix}{item}", font=FB, fill=INK)
+        ay += ROW
+
+
+# Centered title
+title = "NoteKeeper Domain Class Diagram"
+tb = draw.textbbox((0, 0), title, font=FT)
+tw = tb[2] - tb[0]
+draw.text(((W - tw) // 2, 22), title, font=FT, fill=INK)
 
 U = classes["User"]
 UP = classes["UserProfile"]
@@ -235,160 +260,167 @@ WR = enums["WorkspaceRole"]
 NT = enums["NotificationType"]
 LT = enums["LocationType"]
 
-gap_x = Wsp["pos"][0] + Wsp["w"] + (P["pos"][0] - (Wsp["pos"][0] + Wsp["w"])) // 2
+# --- Relationships (orthogonal, endpoints on borders) ---
 
-# User -> UserProfile
-p1 = side_point(U, "bottom", 0.5)
-p2 = side_point(UP, "top", 0.5)
-draw_poly([p1, p2])
-label_at((p1[0] + p2[0]) // 2 + 40, (p1[1] + p2[1]) // 2, "1  profile  1")
+# User - UserProfile
+a, b = attach(U, "bottom", 0.5), attach(UP, "top", 0.5)
+link([a, b])
+label_at((a[0] + b[0]) // 2 + 42, (a[1] + b[1]) // 2, "1   profile   1")
 
-# Location -> User
-p1 = side_point(L, "top", 0.35)
-p2 = side_point(U, "bottom", 0.25)
-draw_poly([p1, p2])
-label_at((p1[0] + p2[0]) // 2 - 24, (p1[1] + p2[1]) // 2, "1  *")
+# Location - User
+a, b = attach(L, "top", 0.4), attach(U, "bottom", 0.28)
+link([a, b])
+label_at((a[0] + b[0]) // 2 - 24, (a[1] + b[1]) // 2, "1     *")
 
-# Location parent self
+# Location parent (self)
 x, y = L["pos"]
 w, h = L["w"], L["h"]
-draw_poly(
+link(
     [
-        (x + w, y + 45),
-        (x + w + 34, y + 45),
-        (x + w + 34, y + h + 26),
-        (x + w // 2, y + h + 26),
+        (x + w, y + 48),
+        (x + w + 36, y + 48),
+        (x + w + 36, y + h + 28),
+        (x + w // 2, y + h + 28),
         (x + w // 2, y + h),
     ]
 )
-label_at(x + w + 10, y + h + 10, "1 parent *")
+label_at(x + w + 12, y + h + 12, "1  parent  *")
 
-# User -> Workspace
-p1 = side_point(U, "right", 0.2)
-p2 = side_point(Wsp, "left", 0.2)
-draw_poly([p1, p2])
-label_at((p1[0] + p2[0]) // 2, p1[1] - 10, "1  owner  *")
+# User - Workspace
+a, b = attach(U, "right", 0.22), attach(Wsp, "left", 0.22)
+link([a, b])
+label_at((a[0] + b[0]) // 2, a[1] - 12, "1  owner  *")
 
-# User -> WorkspaceMember
-p1 = side_point(U, "right", 0.72)
-p2 = side_point(WM, "left", 0.4)
-mx = p1[0] + 50
-draw_poly([p1, (mx, p1[1]), (mx, p2[1]), p2])
-label_at(mx + 20, (p1[1] + p2[1]) // 2, "1  *")
+# User - WorkspaceMember
+a, b = attach(U, "right", 0.7), attach(WM, "left", 0.4)
+mx = a[0] + 55
+link([a, (mx, a[1]), (mx, b[1]), b])
+label_at(mx + 22, (a[1] + b[1]) // 2, "1     *")
 
-# Workspace -> WorkspaceMember
-p1 = side_point(Wsp, "bottom", 0.45)
-p2 = side_point(WM, "top", 0.45)
-draw_poly([p1, p2])
-label_at((p1[0] + p2[0]) // 2 + 50, (p1[1] + p2[1]) // 2, "1  members  *")
+# Workspace - WorkspaceMember
+a, b = attach(Wsp, "bottom", 0.5), attach(WM, "top", 0.5)
+link([a, b])
+label_at((a[0] + b[0]) // 2 + 52, (a[1] + b[1]) // 2, "1  members  *")
 
-# Workspace -> Page
-p1 = side_point(Wsp, "right", 0.35)
-p2 = side_point(P, "left", 0.35)
-draw_poly([p1, p2])
-label_at((p1[0] + p2[0]) // 2, p1[1] - 10, "1  pages  *")
+# Workspace - Page
+a, b = attach(Wsp, "right", 0.35), attach(P, "left", 0.35)
+link([a, b])
+label_at((a[0] + b[0]) // 2, a[1] - 12, "1  pages  *")
 
-# User -> Page author (top)
-p1 = side_point(U, "top", 0.65)
-p2 = side_point(P, "top", 0.2)
-draw_poly([p1, (p1[0], 58), (p2[0], 58), p2])
-label_at((p1[0] + p2[0]) // 2, 46, "1  author  *")
+# User - Page (author) over the top
+a, b = attach(U, "top", 0.7), attach(P, "top", 0.25)
+link([a, (a[0], 68), (b[0], 68), b])
+label_at((a[0] + b[0]) // 2, 54, "1  author  *")
 
-# WorkspaceMember -> WorkspaceRole
-p1 = side_point(WM, "bottom", 0.5)
-p2 = side_point(WR, "top", 0.5)
-draw_poly([p1, p2])
+# WorkspaceMember - WorkspaceRole
+a, b = attach(WM, "bottom", 0.5), attach(WR, "top", 0.5)
+link([a, b])
 
-# Page -> PageShare
-p1 = side_point(P, "bottom", 0.3)
-p2 = side_point(PS, "top", 0.3)
-draw_poly([p1, p2])
-label_at((p1[0] + p2[0]) // 2 + 28, (p1[1] + p2[1]) // 2, "1  *")
+# Page - PageShare
+a, b = attach(P, "bottom", 0.3), attach(PS, "top", 0.3)
+link([a, b])
+label_at((a[0] + b[0]) // 2 + 30, (a[1] + b[1]) // 2, "1     *")
 
-# Page -> Attachment
-p1 = side_point(P, "bottom", 0.75)
-p2 = side_point(A, "top", 0.55)
-yy = PS["pos"][1] + PS["h"] + 16
-draw_poly([p1, (p1[0], yy), (p2[0], yy), p2])
-label_at(p2[0] + 36, yy - 8, "1  *")
+# Page - Attachment
+a, b = attach(P, "bottom", 0.72), attach(A, "top", 0.55)
+yy = PS["pos"][1] + PS["h"] + 18
+link([a, (a[0], yy), (b[0], yy), b])
+label_at(b[0] + 38, yy - 10, "1     *")
 
-# Page -> PageTag
-p1 = side_point(P, "right", 0.45)
-p2 = side_point(PT, "left", 0.4)
-draw_poly([p1, p2])
-label_at((p1[0] + p2[0]) // 2, p1[1] - 10, "1  *")
+# Page - PageTag
+a, b = attach(P, "right", 0.48), attach(PT, "left", 0.45)
+link([a, b])
+label_at((a[0] + b[0]) // 2, a[1] - 12, "1     *")
 
-# Tag -> PageTag
-p1 = side_point(T, "bottom", 0.5)
-p2 = side_point(PT, "top", 0.5)
-draw_poly([p1, p2])
-label_at((p1[0] + p2[0]) // 2 + 28, (p1[1] + p2[1]) // 2, "1  *")
+# Tag - PageTag
+a, b = attach(T, "bottom", 0.5), attach(PT, "top", 0.5)
+link([a, b])
+label_at((a[0] + b[0]) // 2 + 30, (a[1] + b[1]) // 2, "1     *")
 
-# User -> PageShare sharedWith (through wide gap, below WorkspaceMember)
-p1 = side_point(U, "bottom", 0.85)
-p2 = side_point(PS, "left", 0.55)
-cy = WM["pos"][1] + WM["h"] + 30
-draw_poly([p1, (p1[0], cy), (gap_x, cy), (gap_x, p2[1]), p2])
-label_at(gap_x + 4, cy - 12, "sharedWith")
+# User - PageShare (sharedWith) below members, through gap
+a = attach(U, "bottom", 0.82)
+b = attach(PS, "left", 0.5)
+cy = WM["pos"][1] + WM["h"] + 28
+gx = Wsp["pos"][0] + Wsp["w"] + (P["pos"][0] - Wsp["pos"][0] - Wsp["w"]) // 2
+link([a, (a[0], cy), (gx, cy), (gx, b[1]), b])
+label_at(gx + 6, cy - 12, "sharedWith")
 
-# User -> Attachment uploadedBy
-p1 = side_point(UP, "right", 0.75)
-p2 = side_point(A, "left", 0.45)
+# UserProfile - Attachment (uploadedBy)
+a = attach(UP, "right", 0.7)
+b = attach(A, "left", 0.45)
 cx = 340
-cy = A["pos"][1] + A["h"] // 2
-draw_poly([p1, (cx, p1[1]), (cx, cy), p2])
-label_at(cx + 4, cy - 12, "uploadedBy")
+cy = b[1]
+link([a, (cx, a[1]), (cx, cy), b])
+label_at(cx + 6, cy - 14, "uploadedBy")
 
-# User -> Notification / TwoFactorCode along top
-p2 = side_point(N, "top", 0.25)
-draw_poly([(P["pos"][0] + int(P["w"] * 0.75), 58), (p2[0], 58), p2])
-label_at((P["pos"][0] + N["pos"][0]) // 2 + 40, 46, "receives")
+# Top lane: Page area to Notification / TwoFactorCode
+a = attach(P, "top", 0.85)
+b = attach(N, "top", 0.3)
+link([a, (a[0], 68), (b[0], 68), b])
+label_at((a[0] + b[0]) // 2, 54, "receives")
 
-p2 = side_point(TF, "left", 0.35)
-draw_poly([(N["pos"][0] + N["w"] // 2, 58), (p2[0], 58), p2])
-label_at(TF["pos"][0] - 70, 46, "verifies")
+a = attach(N, "top", 0.7)
+b = attach(TF, "left", 0.35)
+link([(a[0], 68), (b[0], 68), b])
+label_at(TF["pos"][0] - 72, 54, "verifies")
 
-# User -> PasswordResetToken
-p1 = side_point(U, "right", 0.5)
-p2 = side_point(PR, "left", 0.4)
-cx = 350
-cy = 450
-draw_poly([p1, (cx, p1[1]), (cx, cy), (p2[0] - 18, cy), (p2[0] - 18, p2[1]), p2])
-label_at(PR["pos"][0] - 60, cy - 12, "resets")
+# Also connect User into that top lane so verifies/receives originate from User
+a = attach(U, "top", 0.9)
+link([a, (a[0], 68)])
 
-# Notification -> NotificationType
-p1 = side_point(N, "bottom", 0.5)
-p2 = side_point(NT, "top", 0.5)
-draw_poly([p1, p2])
+# User - PasswordResetToken
+a = attach(U, "right", 0.48)
+b = attach(PR, "left", 0.4)
+cx = 355
+cy = 455
+link([a, (cx, a[1]), (cx, cy), (b[0] - 16, cy), (b[0] - 16, b[1]), b])
+label_at(PR["pos"][0] - 58, cy - 12, "resets")
 
-# Location -> LocationType
-p1 = side_point(L, "bottom", 0.5)
-p2 = side_point(LT, "top", 0.5)
-draw_poly([p1, p2])
+# Notification - NotificationType
+a, b = attach(N, "bottom", 0.5), attach(NT, "top", 0.5)
+link([a, b])
 
+# Location - LocationType
+a, b = attach(L, "bottom", 0.5), attach(LT, "top", 0.5)
+link([a, b])
 
-def draw_class(name, c, is_enum=False):
-    x, y = c["pos"]
-    w, h = c["w"], c["h"]
-    items = c.get("attrs") or c.get("vals")
-    bg = ENUM_BG if is_enum else BOX
-    hdr = ENUM_HDR if is_enum else HDR
-    draw.rounded_rectangle([x, y, x + w, y + h], radius=6, fill=bg, outline=BORDER, width=1)
-    draw.rectangle([x + 1, y + 1, x + w - 1, y + HEADER], fill=hdr)
-    label = f"«enum» {name}" if is_enum else name
-    draw.text((x + 10, y + 6), label, font=FN, fill=HDR_FG)
-    draw.line([(x + 1, y + HEADER), (x + w - 1, y + HEADER)], fill=BORDER, width=1)
-    ay = y + HEADER + 8
-    prefix = "" if is_enum else "- "
-    for item in items:
-        draw.text((x + 12, ay), f"{prefix}{item}", font=FB, fill=INK)
-        ay += ROW
-
-
+# Draw boxes on top so borders cover line ends cleanly
 for name, c in classes.items():
     draw_class(name, c, False)
 for name, c in enums.items():
     draw_class(name, c, True)
+
+# --- Scales / legend at bottom ---
+ly = 1080
+lh = 150
+draw.rounded_rectangle([50, ly, W - 50, ly + lh], radius=8, fill=LEGEND_BG, outline=BORDER, width=1)
+draw.text((70, ly + 14), "Scales", font=FN, fill=INK)
+
+# Multiplicity scale
+draw.text((70, ly + 48), "Multiplicity", font=FS, fill=MUTED)
+draw.text((70, ly + 72), "1", font=FN, fill=INK)
+draw.text((95, ly + 72), "= exactly one", font=FS, fill=INK)
+draw.text((70, ly + 96), "*", font=FN, fill=INK)
+draw.text((95, ly + 96), "= zero or more", font=FS, fill=INK)
+
+# Association scale
+draw.text((320, ly + 48), "Association", font=FS, fill=MUTED)
+draw.line([(320, ly + 82), (400, ly + 82)], fill=LINE, width=2)
+draw.text((415, ly + 72), "relationship between entities", font=FS, fill=INK)
+draw.text((320, ly + 104), "1  role  *", font=FN, fill=INK)
+draw.text((410, ly + 104), "= role name with cardinality", font=FS, fill=INK)
+
+# Symbol scale
+draw.text((780, ly + 48), "Symbols", font=FS, fill=MUTED)
+draw.rectangle([780, ly + 72, 800, ly + 92], fill=BOX, outline=BORDER, width=2)
+draw.text((812, ly + 74), "class / entity", font=FS, fill=INK)
+draw.rectangle([780, ly + 104, 800, ly + 124], fill=ENUM_BG, outline=BORDER, width=2)
+draw.text((812, ly + 106), "«enum»  enumeration type", font=FS, fill=INK)
+
+# Attribute scale
+draw.text((1180, ly + 48), "Attributes", font=FS, fill=MUTED)
+draw.text((1180, ly + 74), "- name: Type", font=FN, fill=INK)
+draw.text((1180, ly + 104), "private field with data type", font=FS, fill=INK)
 
 out_dir = Path(__file__).resolve().parent / "images"
 out_dir.mkdir(parents=True, exist_ok=True)
