@@ -67,8 +67,8 @@ html, body {
     border-bottom: 1px solid var(--gray-200);
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0 var(--spacing-lg);
-    gap: var(--spacing-lg);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
@@ -98,10 +98,16 @@ html, body {
     flex-shrink: 0;
 }
 
-.topbar-search {
+.topbar-center {
     flex: 1;
-    max-width: 520px;
+    display: flex;
+    justify-content: center;
+}
+
+.topbar-search {
     position: relative;
+    width: 100%;
+    max-width: 480px;
 }
 
 .topbar-search .search-icon {
@@ -122,6 +128,36 @@ html, body {
     padding: 8px 12px 8px 36px;
     font: inherit;
     color: var(--gray-500);
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.topbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.topbar-btn:hover {
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+
+.topbar-btn .icon {
+    width: 20px;
+    height: 20px;
 }
 
 .shell {
@@ -544,6 +580,20 @@ html, body {
 @media (max-width: 900px) {
     .sidebar { display: none; }
     .stats, .grid-2, .form-grid { grid-template-columns: 1fr; }
-    .topbar-search { display: none; }
+    .topbar-center { display: none; }
     .content { padding: 20px; }
+}
+
+@media (max-width: 640px) {
+    .topbar {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .brand-name {
+        display: none;
+    }
+    
+    .topbar-actions {
+        gap: var(--spacing-xs);
+    }
 }
