@@ -12,10 +12,6 @@
             <div>
                 <h1>Workspaces</h1>
                 <p>Group notes for school, work, or personal projects</p>
-                <h:form>
-                    <h:commandButton value="Force Fix Defaults" action="#{workspaceBean.forceFixDefaults}" 
-                                     styleClass="btn btn-secondary" style="margin-top: 10px;"/>
-                </h:form>
             </div>
         </div>
 
@@ -78,7 +74,7 @@
                         <div class="workspace-name-cell">
                             <span class="workspace-icon">#{item.icon}</span>
                             <span class="workspace-name">#{item.name}</span>
-                            <span class="default-badge" rendered="#{item.isDefault}">
+                            <span class="default-badge" rendered="#{item.isDefault eq true}">
                                 <i data-lucide="check" class="icon"></i>
                                 Default
                             </span>

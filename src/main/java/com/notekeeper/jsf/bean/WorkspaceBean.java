@@ -86,18 +86,34 @@ public class WorkspaceBean {
                 System.out.println("First workspace - setting as default");
             }
             
-            // Business rule: Only one default workspace allowed
-            if (workspace.getIsDefault()) {
-                System.out.println("Workspace is marked as default - clearing other defaults");
-                clearOtherDefaults();
+            // Simplified logic: If this workspace should be default, clear all others
+            if (workspace.getIsDefault() != null && workspace.getIsDefault()) {
+                System.out.println("Workspace is marked as default - clearing ALL other defaults");
+                // Set ALL other workspaces to false
+                List<Workspace> others = workspaceDAO.findAll().stream()
+                    .filter(ws -> !ws.getId().equals(workspace.getId()))
+                    .toList();
+                for (Workspace other : others) {
+                    other.setIsDefault(false);
+                    workspaceDAO.update(other);
+                    System.out.println("Cleared default from: " + other.getName());
+                }
             }
             
-            // Business rule: At least one default must exist 
-            boolean isNewWorkspace = (workspace.getId() == null || workspace.getId().isBlank());
-            if (!workspace.getIsDefault() && !hasOtherDefaults()) {
-                workspace.setIsDefault(true);
-                System.out.println("No other defaults exist - forcing this to be default");
-                addMessage(FacesMessage.SEVERITY_INFO, "This workspace was set as default because at least one default workspace is required.");
+            // Ensure at least one default exists
+            if (workspace.getIsDefault() == null || !workspace.getIsDefault()) {
+                // Check if any other workspace is default
+                List<Workspace> allOthers = workspaceDAO.findAll().stream()
+                    .filter(ws -> !ws.getId().equals(workspace.getId()))
+                    .filter(ws -> ws.getIsDefault() != null && ws.getIsDefault())
+                    .toList();
+                
+                if (allOthers.isEmpty()) {
+                    // No other defaults exist, make this one default
+                    workspace.setIsDefault(true);
+                    System.out.println("No other defaults exist - making this default");
+                    addMessage(FacesMessage.SEVERITY_INFO, "This workspace was set as default because at least one default workspace is required.");
+                }
             }
             
             if (workspace.getId() == null || workspace.getId().isBlank()) {
@@ -230,12 +246,4 @@ public class WorkspaceBean {
         return editing;
     }
     
-    // Manual fix method for testing
-    public String forceFixDefaults() {
-        System.out.println("MANUALLY TRIGGERED DEFAULT FIX");
-        fixMultipleDefaults();
-        load(); // Reload data
-        addMessage(FacesMessage.SEVERITY_INFO, "Forced fix applied - only one workspace should be default now");
-        return null;
-    }
 }
