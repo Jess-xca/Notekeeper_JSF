@@ -45,10 +45,6 @@
                         </h:inputText>
                         <h:message for="wsIcon" styleClass="error"/>
                     </div>
-                    <div class="field">
-                        <h:outputLabel for="wsDefault" value="Default workspace"/>
-                        <h:selectBooleanCheckbox id="wsDefault" value="#{workspaceBean.workspace.isDefault}"/>
-                    </div>
                     <div class="field full">
                         <h:outputLabel for="wsDescription" value="Description"/>
                         <h:inputTextarea id="wsDescription" value="#{workspaceBean.workspace.description}" rows="3">

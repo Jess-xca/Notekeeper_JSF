@@ -31,23 +31,19 @@ public class WorkspaceBean {
     
     private void fixMultipleDefaults() {
         try {
-            System.out.println("Starting NUCLEAR fixMultipleDefaults()...");
+            System.out.println("Starting PERSONAL-ONLY fix...");
             
-            // NUCLEAR OPTION: Direct SQL updates to bypass any ORM issues
+            // Set ALL workspaces to non-default first
             workspaceDAO.executeDirectSQL("UPDATE jsf_workspaces SET isDefault = false");
-            System.out.println("NUCLEAR: Set ALL workspaces to non-default via direct SQL");
+            System.out.println("PERSONAL-ONLY: Set ALL workspaces to non-default");
             
-            // Get first workspace and set it as default via direct SQL
-            List<Workspace> allWorkspaces = workspaceDAO.findAll();
-            if (!allWorkspaces.isEmpty()) {
-                Workspace firstWorkspace = allWorkspaces.get(0);
-                workspaceDAO.executeDirectSQL("UPDATE jsf_workspaces SET isDefault = true WHERE id = '" + firstWorkspace.getId() + "'");
-                System.out.println("NUCLEAR: Set " + firstWorkspace.getName() + " as THE ONLY default via direct SQL");
-            }
+            // Set only "Personal" workspace as default
+            workspaceDAO.executeDirectSQL("UPDATE jsf_workspaces SET isDefault = true WHERE LOWER(name) = 'personal'");
+            System.out.println("PERSONAL-ONLY: Set 'Personal' workspace as THE ONLY default");
             
-            System.out.println("NUCLEAR fix completed!");
+            System.out.println("PERSONAL-ONLY fix completed!");
         } catch (Exception ex) {
-            System.err.println("Error in nuclear fix: " + ex.getMessage());
+            System.err.println("Error in Personal-only fix: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -75,40 +71,11 @@ public class WorkspaceBean {
                 System.out.println("First workspace - setting as default");
             }
             
-            // Simplified logic: If this workspace should be default, clear all others
-            if (workspace.getIsDefault() != null && workspace.getIsDefault()) {
-                System.out.println("Workspace is marked as default - clearing ALL other defaults");
-                // Set ALL other workspaces to false
-                List<Workspace> others = workspaceDAO.findAll().stream()
-                    .filter(ws -> !ws.getId().equals(workspace.getId()))
-                    .toList();
-                for (Workspace other : others) {
-                    other.setIsDefault(false);
-                    workspaceDAO.update(other);
-                    System.out.println("Cleared default from: " + other.getName());
-                }
-            }
+            // Simple rule: Only "Personal" workspace is default
+            boolean isPersonalWorkspace = "Personal".equalsIgnoreCase(workspace.getName());
+            workspace.setIsDefault(isPersonalWorkspace);
             
-            // Only force default if we're creating a new workspace and no defaults exist
-            boolean isNewWorkspace = (workspace.getId() == null || workspace.getId().isBlank());
-            if (isNewWorkspace && (workspace.getIsDefault() == null || !workspace.getIsDefault())) {
-                // Check if any existing workspace is default
-                List<Workspace> existingDefaults = workspaceDAO.findAll().stream()
-                    .filter(ws -> ws.getIsDefault() != null && ws.getIsDefault())
-                    .toList();
-                
-                if (existingDefaults.isEmpty()) {
-                    // No defaults exist, make this new one default
-                    workspace.setIsDefault(true);
-                    System.out.println("No defaults exist - making this new workspace default");
-                    addMessage(FacesMessage.SEVERITY_INFO, "This workspace was set as default because at least one default workspace is required.");
-                }
-            }
-            
-            // If editing existing workspace and unchecking default, respect the user's choice
-            if (!isNewWorkspace && (workspace.getIsDefault() == null || !workspace.getIsDefault())) {
-                System.out.println("User unchecked default for existing workspace - respecting choice");
-            }
+            System.out.println("Setting " + workspace.getName() + " default status to: " + isPersonalWorkspace);
             
             if (workspace.getId() == null || workspace.getId().isBlank()) {
                 workspaceDAO.save(workspace);

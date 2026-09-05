@@ -24,8 +24,9 @@ public class AppStartupListener implements ServletContextListener {
 
             WorkspaceDAO workspaceDAO = new WorkspaceDAO();
             if (workspaceDAO.findAll().isEmpty()) {
-                workspaceDAO.save(new Workspace("Inbox", "Default landing workspace for new notes.", "📥", "Jessica Irakoze", true));
-                workspaceDAO.save(new Workspace("Research", "Shared space for research notes and drafts.", "🔬", "Alain Muvunyi", false));
+                workspaceDAO.save(new Workspace("Personal", "Your personal workspace for private notes.", "👤", "JK", true));
+                workspaceDAO.save(new Workspace("Research", "Shared space for research notes and drafts.", "🔬", "Jessica Irakoze", false));
+                workspaceDAO.save(new Workspace("Business", "Professional workspace for work-related notes.", "💼", "Me", false));
             }
         } catch (Exception ex) {
             System.err.println("Unable to seed demo data: " + ex.getMessage());
