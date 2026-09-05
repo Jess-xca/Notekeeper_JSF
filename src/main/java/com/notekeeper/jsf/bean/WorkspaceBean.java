@@ -62,10 +62,13 @@ public class WorkspaceBean {
 
     public void load() {
         workspaces = workspaceDAO.findAll();
+        fixMultipleDefaults(); // Always fix on load
     }
 
     public void save() {
         try {
+            System.out.println("Save called - IsDefault checkbox value: " + workspace.getIsDefault());
+            
             if (workspace.getIsDefault() == null) {
                 workspace.setIsDefault(false);
             }
@@ -77,17 +80,20 @@ public class WorkspaceBean {
             
             if (isFirstWorkspace) {
                 workspace.setIsDefault(true);
+                System.out.println("First workspace - setting as default");
             }
             
             // Business rule: Only one default workspace allowed
             if (workspace.getIsDefault()) {
+                System.out.println("Workspace is marked as default - clearing other defaults");
                 clearOtherDefaults();
             }
             
-            // Business rule: At least one default must exist (only when creating new workspace)
+            // Business rule: At least one default must exist 
             boolean isNewWorkspace = (workspace.getId() == null || workspace.getId().isBlank());
-            if (isNewWorkspace && !workspace.getIsDefault() && !hasOtherDefaults()) {
+            if (!workspace.getIsDefault() && !hasOtherDefaults()) {
                 workspace.setIsDefault(true);
+                System.out.println("No other defaults exist - forcing this to be default");
                 addMessage(FacesMessage.SEVERITY_INFO, "This workspace was set as default because at least one default workspace is required.");
             }
             
