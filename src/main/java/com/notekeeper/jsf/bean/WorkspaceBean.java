@@ -132,16 +132,18 @@ public class WorkspaceBean {
     public String edit(Workspace selected) {
         System.out.println("WorkspaceBean.edit() called for: " + selected.getName());
         
-        // Reset and populate workspace object
-        this.workspace = new Workspace();
-        this.workspace.setId(selected.getId());
-        this.workspace.setName(selected.getName());
-        this.workspace.setDescription(selected.getDescription());
-        this.workspace.setIcon(selected.getIcon());
-        this.workspace.setOwnerName(selected.getOwnerName());
-        this.workspace.setIsDefault(selected.getIsDefault());
-        this.workspace.setCreatedAt(selected.getCreatedAt());
+        // Create a completely new workspace object to avoid reference issues
+        Workspace editWorkspace = new Workspace();
+        editWorkspace.setId(selected.getId());
+        editWorkspace.setName(selected.getName());
+        editWorkspace.setDescription(selected.getDescription());
+        editWorkspace.setIcon(selected.getIcon());
+        editWorkspace.setOwnerName(selected.getOwnerName());
+        editWorkspace.setIsDefault(selected.getIsDefault());
+        editWorkspace.setCreatedAt(selected.getCreatedAt());
         
+        // Set the workspace reference
+        this.workspace = editWorkspace;
         this.editing = true;
         
         System.out.println("Workspace object populated: " + this.workspace.getName());
@@ -149,8 +151,8 @@ public class WorkspaceBean {
         
         addMessage(FacesMessage.SEVERITY_INFO, "Editing: " + selected.getName());
         
-        // Return null to stay on same page
-        return null;
+        // Force a page redirect to refresh the view state completely
+        return "workspaces?faces-redirect=true";
     }
 
     public void delete(Workspace selected) {
@@ -188,9 +190,7 @@ public class WorkspaceBean {
     }
 
     public void reset() {
-        System.out.println("RESET() called! Clearing workspace data.");
-        System.out.println("Stack trace:");
-        Thread.dumpStack(); // This will show us what's calling reset()
+        System.out.println("RESET() called! Current editing mode: " + editing);
         workspace = new Workspace();
         editing = false;
         System.out.println("Reset completed - workspace is now empty");
@@ -205,7 +205,7 @@ public class WorkspaceBean {
             System.out.println("Workspace was null, creating new one");
             workspace = new Workspace();
         }
-        System.out.println("getWorkspace() called - Name: " + workspace.getName() + ", ID: " + workspace.getId() + ", Owner: " + workspace.getOwnerName());
+        System.out.println("getWorkspace() called - Name: " + workspace.getName() + ", ID: " + workspace.getId() + ", Owner: " + workspace.getOwnerName() + ", Editing: " + editing);
         return workspace;
     }
 
