@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>NoteKeeper | <ui:insert name="title">Home</ui:insert></title>
+    <h:outputStylesheet name="css/app.css"/>
+    <ui:insert name="head"/>
+</h:head>
+<h:body>
+    <div class="app">
+        <header class="topbar">
+            <h:link outcome="home" styleClass="brand">
+                <span class="brand-mark">📓</span>
+                <span class="brand-name">NoteKeeper</span>
+            </h:link>
+            <div class="topbar-search">
+                <input type="text" placeholder="Search pages, workspaces, tags..." disabled="disabled"/>
+            </div>
+        </header>
+
+        <div class="shell">
+            <aside class="sidebar">
+                <nav class="side-nav">
+                    <h:link outcome="home"
+                            styleClass="#{view.viewId == '/index.xhtml' ? 'side-link is-active' : 'side-link'}">
+                        <span>📊</span> Dashboard
+                    </h:link>
+                    <h:link outcome="workspaces"
+                            styleClass="#{view.viewId == '/workspaces.xhtml' ? 'side-link is-active' : 'side-link'}">
+                        <span>🗂️</span> Workspaces
+                    </h:link>
+                    <h:link outcome="tags"
+                            styleClass="#{view.viewId == '/tags.xhtml' ? 'side-link is-active' : 'side-link'}">
+                        <span>🏷️</span> Tags
+                    </h:link>
+                </nav>
+            </aside>
+
+            <main class="content">
+                <ui:insert name="content"/>
+            </main>
+        </div>
+
+        <footer class="footer">
+            <span>© 2026 NoteKeeper. All rights reserved.</span>
+            <span>About · Help · Privacy · Terms</span>
+        </footer>
+    </div>
+</h:body>
+</html>
