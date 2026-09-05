@@ -5,14 +5,14 @@ import com.notekeeper.jsf.dao.WorkspaceDAO;
 import com.notekeeper.jsf.model.Tag;
 import com.notekeeper.jsf.model.Workspace;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Named("homeBean")
-@RequestScoped
+@ApplicationScoped
 public class HomeBean {
 
     private final TagDAO tagDAO = new TagDAO();

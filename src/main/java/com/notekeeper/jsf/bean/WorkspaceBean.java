@@ -5,14 +5,14 @@ import com.notekeeper.jsf.model.Workspace;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Named("workspaceBean")
-@RequestScoped
+@ApplicationScoped
 public class WorkspaceBean {
 
     private final WorkspaceDAO workspaceDAO = new WorkspaceDAO();
