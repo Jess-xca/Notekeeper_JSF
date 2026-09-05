@@ -190,18 +190,18 @@ for c in enums.values():
     c["h"] = box_h(len(c["vals"]))
 
 
-def attach(c, side, t=0.5):
-    """Exact point on the box border."""
+def attach(c, side, t=0.5, inset=3):
+    """Point on the box border, inset slightly so the line meets under the border."""
     x, y = c["pos"]
     w, h = c["w"], c["h"]
     t = max(0.08, min(0.92, t))
     if side == "right":
-        return (x + w, int(y + h * t))
+        return (x + w - inset, int(y + h * t))
     if side == "left":
-        return (x, int(y + h * t))
+        return (x + inset, int(y + h * t))
     if side == "bottom":
-        return (int(x + w * t), y + h)
-    return (int(x + w * t), y)
+        return (int(x + w * t), y + h - inset)
+    return (int(x + w * t), y + inset)
 
 
 def link(points, width=2):
@@ -345,13 +345,13 @@ gx = Wsp["pos"][0] + Wsp["w"] + (P["pos"][0] - Wsp["pos"][0] - Wsp["w"]) // 2
 link([a, (a[0], cy), (gx, cy), (gx, b[1]), b])
 label_at(gx + 6, cy - 12, "sharedWith")
 
-# UserProfile - Attachment (uploadedBy)
-a = attach(UP, "right", 0.7)
+# User - Attachment (uploadedBy)
+a = attach(U, "bottom", 0.9)
 b = attach(A, "left", 0.45)
-cx = 340
+cx = 330
 cy = b[1]
-link([a, (cx, a[1]), (cx, cy), b])
-label_at(cx + 6, cy - 14, "uploadedBy")
+link([a, (a[0], cy), (cx, cy), b])
+label_at(cx + 8, cy - 14, "uploadedBy")
 
 # Top lane: Page area to Notification / TwoFactorCode
 a = attach(P, "top", 0.85)
