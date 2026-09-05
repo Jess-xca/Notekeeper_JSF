@@ -1,83 +1,65 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core">
-<h:head>
-    <meta charset="UTF-8"/>
-    <title>NoteKeeper | Tag CRUD</title>
-    <h:outputStylesheet name="css/app.css"/>
-    <!-- Internal CSS for this page only -->
-    <style>
-        .tag-form-title {
-            margin-top: 0;
-        }
-        .color-hint {
-            font-size: 0.82rem;
-            color: #475569;
-        }
-    </style>
-</h:head>
-<h:body>
-    <div class="nk-shell">
-        <header class="nk-header">
-            <div class="nk-brand">
-                <h1>Tag CRUD</h1>
-                <p>Create, read, update, and delete NoteKeeper tags</p>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="title">Tags</ui:define>
+    <ui:define name="head">
+        <style>
+            .color-hint { font-size: 0.82rem; color: #6b7280; }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <div class="page-head">
+            <div>
+                <h1>Tags</h1>
+                <p>Label your notes so they stay easy to find</p>
             </div>
-            <nav class="nk-nav">
-                <h:link outcome="home" value="Home"/>
-                <h:link outcome="workspaces" value="Workspaces"/>
-            </nav>
-        </header>
+        </div>
 
         <h:form id="tagForm">
-            <h:messages globalOnly="true" styleClass="nk-messages" infoClass="nk-messages" errorClass="nk-error"/>
+            <h:messages globalOnly="true" styleClass="messages" infoClass="messages" errorClass="error"/>
 
-            <section class="nk-card">
-                <h2 class="tag-form-title">#{tagBean.editing ? 'Update Tag' : 'Create Tag'}</h2>
-                <div class="nk-form-grid">
-                    <div class="nk-field">
-                        <h:outputLabel for="tagName" value="Tag name *"/>
+            <section class="card" style="margin-bottom: 20px;">
+                <h2 class="tag-form-title" style="margin-top: 0;">#{tagBean.editing ? 'Edit tag' : 'New tag'}</h2>
+                <div class="form-grid">
+                    <div class="field">
+                        <h:outputLabel for="tagName" value="Name"/>
                         <h:inputText id="tagName" value="#{tagBean.tag.name}" required="true"
                                      requiredMessage="Tag name is required.">
-                            <!-- JSF built-in validators -->
                             <f:validateLength minimum="2" maximum="50"/>
                             <f:validateRegex pattern="[A-Za-z0-9][A-Za-z0-9\s-]*"/>
-                            <!-- Custom validator -->
                             <f:validator validatorId="uniqueTagNameValidator"/>
                             <f:attribute name="currentId" value="#{tagBean.tag.id}"/>
                         </h:inputText>
-                        <h:message for="tagName" styleClass="nk-error"/>
+                        <h:message for="tagName" styleClass="error"/>
                     </div>
-
-                    <div class="nk-field">
-                        <h:outputLabel for="tagColor" value="Hex color *"/>
+                    <div class="field">
+                        <h:outputLabel for="tagColor" value="Color"/>
                         <h:inputText id="tagColor" value="#{tagBean.tag.color}" required="true"
                                      requiredMessage="Tag color is required.">
                             <f:validateLength minimum="7" maximum="7"/>
                             <f:validateRegex pattern="#[A-Fa-f0-9]{6}"/>
                             <f:validator validatorId="hexColorValidator"/>
                         </h:inputText>
-                        <span class="color-hint">Example: #2563EB</span>
-                        <h:message for="tagColor" styleClass="nk-error"/>
+                        <span class="color-hint">Use a hex color such as #4F46E5</span>
+                        <h:message for="tagColor" styleClass="error"/>
                     </div>
                 </div>
-
-                <div class="nk-actions">
-                    <h:commandButton value="#{tagBean.editing ? 'Update Tag' : 'Save Tag'}"
-                                     action="#{tagBean.save}" styleClass="nk-btn nk-btn-primary"/>
-                    <h:commandButton value="Clear" action="#{tagBean.reset}" immediate="true"
-                                     styleClass="nk-btn nk-btn-secondary"/>
+                <div class="actions">
+                    <h:commandButton value="#{tagBean.editing ? 'Save changes' : 'Create tag'}"
+                                     action="#{tagBean.save}" styleClass="btn btn-primary"/>
+                    <h:commandButton value="Cancel" action="#{tagBean.reset}" immediate="true"
+                                     styleClass="btn btn-secondary"/>
                 </div>
             </section>
 
-            <section class="nk-card">
-                <h2 style="margin-top: 0;">All Tags</h2>
-                <h:dataTable value="#{tagBean.tags}" var="item" styleClass="nk-table"
+            <section class="card">
+                <h:dataTable value="#{tagBean.tags}" var="item" styleClass="table"
                              rendered="#{not empty tagBean.tags}">
                     <h:column>
-                        <f:facet name="header">Name</f:facet>
-                        <span class="nk-swatch" style="background-color: #{item.color};"></span>
+                        <f:facet name="header">Tag</f:facet>
+                        <span class="swatch" style="background-color: #{item.color};"></span>
                         <h:outputText value="#{item.name}"/>
                     </h:column>
                     <h:column>
@@ -85,22 +67,17 @@
                         <h:outputText value="#{item.color}"/>
                     </h:column>
                     <h:column>
-                        <f:facet name="header">Created</f:facet>
-                        <h:outputText value="#{item.createdAt}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Actions</f:facet>
+                        <f:facet name="header"></f:facet>
                         <h:commandButton value="Edit" action="#{tagBean.edit(item)}"
-                                         styleClass="nk-btn nk-btn-secondary"/>
+                                         styleClass="btn btn-secondary"/>
                         <h:commandButton value="Delete" action="#{tagBean.delete(item)}"
-                                         styleClass="nk-btn nk-btn-danger"
+                                         styleClass="btn btn-danger"
                                          onclick="return confirm('Delete this tag?');"/>
                     </h:column>
                 </h:dataTable>
-                <h:outputText value="No tags yet. Create the first tag above."
-                              rendered="#{empty tagBean.tags}"/>
+                <h:outputText value="No tags yet. Create one to organize your pages."
+                              styleClass="empty" rendered="#{empty tagBean.tags}"/>
             </section>
         </h:form>
-    </div>
-</h:body>
-</html>
+    </ui:define>
+</ui:composition>
