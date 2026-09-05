@@ -20,10 +20,18 @@
             </h:link>
             
             <div class="topbar-center">
-                <div class="topbar-search">
-                    <i data-lucide="search" class="icon search-icon"></i>
-                    <input type="text" placeholder="Search pages, workspaces, tags..." disabled="disabled"/>
-                </div>
+                <h:form styleClass="topbar-search-form">
+                    <div class="topbar-search">
+                        <i data-lucide="search" class="icon search-icon"></i>
+                        <h:inputText value="#{searchBean.searchQuery}" 
+                                     placeholder="Search pages, workspaces, tags..."
+                                     styleClass="topbar-search-input">
+                            <f:ajax event="keyup" render="@none" 
+                                    listener="#{searchBean.search}" 
+                                    onkeypress="if (event.keyCode == 13) { window.location.href = 'search.xhtml?q=' + encodeURIComponent(this.value); return false; }"/>
+                        </h:inputText>
+                    </div>
+                </h:form>
             </div>
             
             <div class="topbar-actions">

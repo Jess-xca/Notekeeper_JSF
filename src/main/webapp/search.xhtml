@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="title">Search Results</ui:define>
+    <ui:define name="content">
+        <div class="page-head">
+            <div>
+                <h1>Search Results</h1>
+                <p>Results for "#{param.q}"</p>
+            </div>
+        </div>
+
+        <f:metadata>
+            <f:viewParam name="q" value="#{searchBean.searchQuery}"/>
+            <f:viewAction action="#{searchBean.search}"/>
+        </f:metadata>
+
+        <h:form>
+            <section class="card search-form">
+                <div class="search-input-container">
+                    <i data-lucide="search" class="icon search-icon"></i>
+                    <h:inputText value="#{searchBean.searchQuery}" 
+                                 placeholder="Search pages, workspaces, tags..."
+                                 styleClass="search-input"/>
+                    <h:commandButton value="Search" action="#{searchBean.search}" 
+                                     styleClass="btn btn-primary search-btn"/>
+                </div>
+            </section>
+
+            <section class="card" rendered="#{searchBean.hasResults}">
+                <h2>Found #{searchBean.searchResults.size()} results</h2>
+                <div class="search-results">
+                    <ui:repeat value="#{searchBean.searchResults}" var="result">
+                        <div class="search-result-item">
+                            <div class="result-type">#{searchBean.getResultType(result)}</div>
+                            <h3 class="result-title">
+                                <h:link outcome="#{searchBean.getResultLink(result)}" value="#{searchBean.getResultName(result)}"/>
+                            </h3>
+                            <p class="result-description">#{searchBean.getResultDescription(result)}</p>
+                        </div>
+                    </ui:repeat>
+                </div>
+            </section>
+
+            <section class="card" rendered="#{not searchBean.hasResults and not empty searchBean.searchQuery}">
+                <div class="empty-state">
+                    <i data-lucide="search-x" class="icon empty-icon"></i>
+                    <h2>No results found</h2>
+                    <p>No workspaces or tags match "#{searchBean.searchQuery}"</p>
+                    <p>Try searching for something else or check your spelling.</p>
+                </div>
+            </section>
+        </h:form>
+    </ui:define>
+</ui:composition>
