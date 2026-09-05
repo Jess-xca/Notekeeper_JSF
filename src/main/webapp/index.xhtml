@@ -4,34 +4,32 @@
                 template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="title">Dashboard</ui:define>
     <ui:define name="head">
-        <style>
-            .home-empty { color: #6b7280; text-align: center; padding: 16px 0; }
-        </style>
+        <!-- Dashboard-specific styles are now in app.css -->
     </ui:define>
     <ui:define name="content">
-        <section class="welcome" style="background: linear-gradient(to right, #4f46e5, #9333ea);">
-            <h1>Welcome back</h1>
+        <section class="welcome">
+            <h1>Welcome to NoteKeeper</h1>
             <p>Here’s what’s happening with your notes today</p>
         </section>
 
         <section class="stats">
             <article class="card stat">
-                <div>
+                <div class="stat-content">
                     <label>Workspaces</label>
                     <strong>#{homeBean.workspaceCount}</strong>
-                    <h:link outcome="workspaces" value="View all →" styleClass="card-link" style="color: #059669;"/>
+                    <h:link outcome="workspaces" value="View all →" styleClass="stat-link"/>
                 </div>
-                <div class="icon-circle icon-green">
+                <div class="icon-circle">
                     <i data-lucide="folder" class="icon"></i>
                 </div>
             </article>
             <article class="card stat">
-                <div>
+                <div class="stat-content">
                     <label>Tags</label>
                     <strong>#{homeBean.tagCount}</strong>
-                    <h:link outcome="tags" value="View all →" styleClass="card-link" style="color: #2563eb;"/>
+                    <h:link outcome="tags" value="View all →" styleClass="stat-link"/>
                 </div>
-                <div class="icon-circle icon-blue">
+                <div class="icon-circle">
                     <i data-lucide="tag" class="icon"></i>
                 </div>
             </article>
@@ -44,13 +42,13 @@
                     <ui:repeat value="#{homeBean.workspaces}" var="workspace">
                         <div class="list-item">
                             <i data-lucide="folder" class="icon"></i>
-                            <div>
+                            <div class="list-item-content">
                                 <h3>#{workspace.name}</h3>
                                 <p>#{workspace.description}</p>
                             </div>
                         </div>
                     </ui:repeat>
-                    <h:outputText value="No workspaces yet" styleClass="home-empty"
+                    <h:outputText value="No workspaces yet" styleClass="empty"
                                   rendered="#{empty homeBean.workspaces}"/>
                 </div>
             </article>
@@ -61,13 +59,13 @@
                     <ui:repeat value="#{homeBean.tags}" var="tag">
                         <div class="list-item">
                             <span class="swatch" style="background-color: #{tag.color};"></span>
-                            <div>
+                            <div class="list-item-content">
                                 <h3>#{tag.name}</h3>
                                 <p>#{tag.color}</p>
                             </div>
                         </div>
                     </ui:repeat>
-                    <h:outputText value="Create tags to organize your pages" styleClass="home-empty"
+                    <h:outputText value="Create tags to organize your pages" styleClass="empty"
                                   rendered="#{empty homeBean.tags}"/>
                 </div>
             </article>
