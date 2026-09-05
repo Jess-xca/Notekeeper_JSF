@@ -147,30 +147,35 @@ NoteKeeper provides one web system for capture, organization, and controlled sha
 
 ---
 
-## 8. Initial Class Diagram (Entities)
+## 8. Initial Class Diagram
 
-![NoteKeeper initial class diagram](images/NoteKeeper_Class_Diagram.png)
+![NoteKeeper class diagram](images/class-diagram.png)
 
-**Figure 1.** Initial class diagram for NoteKeeper. Phase-1 entities (**Tag**, **Workspace**) are highlighted.
+**Figure 1.** NoteKeeper domain class diagram (full system).
 
-Main entities in the full design:
+The diagram shows the complete entity model. Phase-1 implements **Tag** and **Workspace** (in the JSF prototype, workspace owner is stored as a name field; in the full system it is a `User` reference).
 
-**User**, **UserProfile**, **Location**, **Workspace**, **WorkspaceMember**, **Page**, **Tag**, **PageTag**, **PageShare**, **Attachment**, **Notification**, **TwoFactorCode**, **PasswordResetToken**
+### Main entities
 
-Key relationships:
+User, UserProfile, Location, Workspace, WorkspaceMember, Page, Tag, PageTag, PageShare, Attachment, Notification, TwoFactorCode, PasswordResetToken
 
-- User owns Workspaces and authors Pages  
+### Enumerations
+
+WorkspaceRole, NotificationType, LocationType
+
+### Key relationships
+
+- User has one UserProfile and may own many Workspaces  
 - Workspace contains Pages and WorkspaceMembers  
-- Page links to Tags (via PageTag), Shares, and Attachments  
-- User receives Notifications and uses 2FA / password-reset tokens  
+- Page links to Tags through PageTag, and may have Shares and Attachments  
+- User receives Notifications and uses TwoFactorCode / PasswordResetToken  
 
-### Phase-1 entities (implemented)
+### Phase-1 entities (implemented in JSF)
 
-**Tag:** id, name, color, createdAt  
-
-**Workspace:** id, name, description, icon, ownerName, isDefault, createdAt  
-
-*(In the full system, Workspace.owner is a User reference instead of ownerName.)*
+| Entity | Attributes |
+|---|---|
+| **Tag** | id, name, color, createdAt |
+| **Workspace** | id, name, description, icon, ownerName, isDefault, createdAt |
 
 ---
 
