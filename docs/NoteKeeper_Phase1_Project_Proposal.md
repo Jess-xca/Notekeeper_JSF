@@ -149,6 +149,10 @@ NoteKeeper provides one web system for capture, organization, and controlled sha
 
 ## 8. Initial Class Diagram (Entities)
 
+![NoteKeeper initial class diagram](images/NoteKeeper_Class_Diagram.png)
+
+**Figure 1.** Initial class diagram for NoteKeeper. Phase-1 entities (**Tag**, **Workspace**) are highlighted.
+
 Main entities in the full design:
 
 **User**, **UserProfile**, **Location**, **Workspace**, **WorkspaceMember**, **Page**, **Tag**, **PageTag**, **PageShare**, **Attachment**, **Notification**, **TwoFactorCode**, **PasswordResetToken**
