@@ -45,13 +45,25 @@ public class TagBean {
         }
     }
 
-    public void edit(Tag selected) {
+    public String edit(Tag selected) {
+        System.out.println("TagBean.edit() called for: " + selected.getName());
+        
+        // Reset and populate tag object
         this.tag = new Tag();
         this.tag.setId(selected.getId());
         this.tag.setName(selected.getName());
         this.tag.setColor(selected.getColor());
         this.tag.setCreatedAt(selected.getCreatedAt());
+        
         this.editing = true;
+        
+        System.out.println("Tag object populated: " + this.tag.getName() + ", Color: " + this.tag.getColor());
+        System.out.println("Editing mode: " + this.editing);
+        
+        addMessage(FacesMessage.SEVERITY_INFO, "Editing: " + selected.getName());
+        
+        // Return null to stay on same page
+        return null;
     }
 
     public void delete(Tag selected) {
@@ -68,8 +80,10 @@ public class TagBean {
     }
 
     public void reset() {
+        System.out.println("TagBean.reset() called");
         tag = new Tag();
         editing = false;
+        System.out.println("Tag reset to new instance");
     }
 
     private void addMessage(FacesMessage.Severity severity, String text) {
@@ -77,6 +91,11 @@ public class TagBean {
     }
 
     public Tag getTag() {
+        if (tag == null) {
+            System.out.println("Tag was null, creating new one");
+            tag = new Tag();
+        }
+        System.out.println("getTag() called - Name: " + tag.getName() + ", ID: " + tag.getId() + ", Color: " + tag.getColor());
         return tag;
     }
 
