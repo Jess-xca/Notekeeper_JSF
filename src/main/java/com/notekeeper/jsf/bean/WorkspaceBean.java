@@ -50,7 +50,6 @@ public class WorkspaceBean {
 
     public void load() {
         workspaces = workspaceDAO.findAll();
-        fixMultipleDefaults(); // Always fix on load
     }
 
     public void save() {
@@ -71,11 +70,7 @@ public class WorkspaceBean {
                 System.out.println("First workspace - setting as default");
             }
             
-            // Simple rule: Only "Personal" workspace is default
-            boolean isPersonalWorkspace = "Personal".equalsIgnoreCase(workspace.getName());
-            workspace.setIsDefault(isPersonalWorkspace);
-            
-            System.out.println("Setting " + workspace.getName() + " default status to: " + isPersonalWorkspace);
+            // No default logic needed - handled in display
             
             if (workspace.getId() == null || workspace.getId().isBlank()) {
                 workspaceDAO.save(workspace);
