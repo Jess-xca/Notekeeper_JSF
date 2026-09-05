@@ -70,6 +70,19 @@
                         <div class="workspace-name-cell">
                             <span class="workspace-icon">#{item.icon}</span>
                             <span class="workspace-name">#{item.name}</span>
+                            <!-- Debug: Show raw values -->
+                            <small style="color: #999; font-size: 10px; display: block;">
+                                Name: '#{item.name}' | isDefault: '#{item.isDefault}' | Type: #{item.isDefault.class.simpleName}
+                            </small>
+                            <!-- Test different conditions -->
+                            <span class="default-badge" rendered="#{item.name == 'Personal'}">
+                                <i data-lucide="check" class="icon"></i>
+                                Default (name match)
+                            </span>
+                            <span class="default-badge" rendered="#{item.isDefault}">
+                                <i data-lucide="check" class="icon"></i>  
+                                Default (isDefault true)
+                            </span>
                         </div>
                     </h:column>
                     <h:column>
