@@ -1,80 +1,72 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:ui="jakarta.faces.facelets">
-<h:head>
-    <meta charset="UTF-8"/>
-    <title>NoteKeeper | Phase-1 Proposal</title>
-    <h:outputStylesheet name="css/app.css"/>
-    <!-- Internal CSS -->
-    <style>
-        .hero-badge {
-            display: inline-block;
-            background: #dbeafe;
-            color: #1e3a8a;
-            border-radius: 999px;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        .hero-card a {
-            font-weight: 700;
-            color: #1d4ed8;
-            text-decoration: none;
-        }
-    </style>
-</h:head>
-<h:body>
-    <div class="nk-shell">
-        <header class="nk-header">
-            <div class="nk-brand">
-                <h1>NoteKeeper</h1>
-                <p>Collaborative note-taking system - Phase-1 JSF prototype</p>
-            </div>
-            <nav class="nk-nav">
-                <h:link outcome="home" value="Home"/>
-                <h:link outcome="tags" value="Tags CRUD"/>
-                <h:link outcome="workspaces" value="Workspaces CRUD"/>
-            </nav>
-        </header>
-
-        <section class="nk-card">
-            <span class="hero-badge">Phase-1 Practical Project</span>
-            <h2 style="margin-top: 8px;">JSF + Hibernate CRUD Demonstration</h2>
-            <p>
-                This prototype implements full Create, Read, Update, and Delete operations
-                for two NoteKeeper entities: <strong>Tag</strong> and <strong>Workspace</strong>.
-                It uses Hibernate for persistence and three validation types plus three CSS types.
-            </p>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="title">Dashboard</ui:define>
+    <ui:define name="head">
+        <style>
+            .home-empty { color: #6b7280; text-align: center; padding: 16px 0; }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <section class="welcome" style="background: linear-gradient(to right, #4f46e5, #9333ea);">
+            <h1>Welcome back 👋</h1>
+            <p>Here’s what’s happening with your notes today</p>
         </section>
 
-        <div class="nk-home-grid">
-            <section class="nk-card hero-card">
-                <h3>1. Tag Management</h3>
-                <p>Create colored labels used to organize notes. Validation covers name uniqueness, length, and hex color format.</p>
-                <h:link outcome="tags" value="Open Tag CRUD"/>
-            </section>
-            <section class="nk-card hero-card">
-                <h3>2. Workspace Management</h3>
-                <p>Create workspaces that group notes for personal or team use. Validation covers reserved names, length, and required owner.</p>
-                <h:link outcome="workspaces" value="Open Workspace CRUD"/>
-            </section>
-        </div>
-
-        <section class="nk-card">
-            <h3>Assignment checklist demonstrated here</h3>
-            <ul>
-                <li>JSF pages with backing beans</li>
-                <li>Hibernate mapping and CRUD through DAOs</li>
-                <li>Bean Validation, JSF built-in validators, and custom validators</li>
-                <li>External CSS (<code>app.css</code>), internal CSS (this page), and inline CSS (page titles)</li>
-            </ul>
+        <section class="stats">
+            <article class="card stat">
+                <div>
+                    <label>Workspaces</label>
+                    <strong>#{homeBean.workspaceCount}</strong>
+                    <h:link outcome="workspaces" value="View all →" styleClass="card-link" style="color: #059669;"/>
+                </div>
+                <div class="icon-circle icon-green">🗂️</div>
+            </article>
+            <article class="card stat">
+                <div>
+                    <label>Tags</label>
+                    <strong>#{homeBean.tagCount}</strong>
+                    <h:link outcome="tags" value="View all →" styleClass="card-link" style="color: #2563eb;"/>
+                </div>
+                <div class="icon-circle icon-blue">🏷️</div>
+            </article>
         </section>
 
-        <footer class="nk-footer">
-            GitHub: https://github.com/Jess-xca/Notekeeper_JSF
-        </footer>
-    </div>
-</h:body>
-</html>
+        <section class="grid-2">
+            <article class="card">
+                <h2 style="margin-top: 0;">Recent workspaces</h2>
+                <div class="list">
+                    <ui:repeat value="#{homeBean.workspaces}" var="workspace">
+                        <div class="list-item">
+                            <span>#{workspace.icon}</span>
+                            <div>
+                                <h3>#{workspace.name}</h3>
+                                <p>#{workspace.description}</p>
+                            </div>
+                        </div>
+                    </ui:repeat>
+                    <h:outputText value="No workspaces yet" styleClass="home-empty"
+                                  rendered="#{empty homeBean.workspaces}"/>
+                </div>
+            </article>
+
+            <article class="card">
+                <h2 style="margin-top: 0;">Your tags</h2>
+                <div class="list">
+                    <ui:repeat value="#{homeBean.tags}" var="tag">
+                        <div class="list-item">
+                            <span class="swatch" style="background-color: #{tag.color};"></span>
+                            <div>
+                                <h3>#{tag.name}</h3>
+                                <p>#{tag.color}</p>
+                            </div>
+                        </div>
+                    </ui:repeat>
+                    <h:outputText value="Create tags to organize your pages" styleClass="home-empty"
+                                  rendered="#{empty homeBean.tags}"/>
+                </div>
+            </article>
+        </section>
+    </ui:define>
+</ui:composition>
