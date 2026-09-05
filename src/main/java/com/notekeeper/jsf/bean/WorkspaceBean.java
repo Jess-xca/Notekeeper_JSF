@@ -189,8 +189,11 @@ public class WorkspaceBean {
 
     public void reset() {
         System.out.println("RESET() called! Clearing workspace data.");
+        System.out.println("Stack trace:");
+        Thread.dumpStack(); // This will show us what's calling reset()
         workspace = new Workspace();
         editing = false;
+        System.out.println("Reset completed - workspace is now empty");
     }
 
     private void addMessage(FacesMessage.Severity severity, String text) {
@@ -218,10 +221,4 @@ public class WorkspaceBean {
         return editing;
     }
     
-    public String fixDefaults() {
-        fixMultipleDefaults();
-        load(); // Reload data
-        addMessage(FacesMessage.SEVERITY_INFO, "Fixed multiple default workspaces.");
-        return null; // Stay on same page
-    }
 }
