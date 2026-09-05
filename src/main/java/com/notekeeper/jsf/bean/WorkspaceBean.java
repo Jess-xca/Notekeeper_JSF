@@ -22,7 +22,33 @@ public class WorkspaceBean {
 
     @PostConstruct
     public void init() {
+        if (workspace == null) {
+            workspace = new Workspace();
+        }
+        fixMultipleDefaults(); // Fix corrupted data
         load();
+    }
+    
+    private void fixMultipleDefaults() {
+        try {
+            List<Workspace> allWorkspaces = workspaceDAO.findAll();
+            List<Workspace> defaultWorkspaces = allWorkspaces.stream()
+                .filter(ws -> ws.getIsDefault())
+                .toList();
+            
+            if (defaultWorkspaces.size() > 1) {
+                System.out.println("Found " + defaultWorkspaces.size() + " default workspaces. Fixing...");
+                // Keep first one as default, remove default from others
+                for (int i = 1; i < defaultWorkspaces.size(); i++) {
+                    Workspace ws = defaultWorkspaces.get(i);
+                    ws.setIsDefault(false);
+                    workspaceDAO.update(ws);
+                    System.out.println("Removed default from: " + ws.getName());
+                }
+            }
+        } catch (Exception ex) {
+            System.err.println("Error fixing defaults: " + ex.getMessage());
+        }
     }
 
     public void load() {
@@ -49,8 +75,9 @@ public class WorkspaceBean {
                 clearOtherDefaults();
             }
             
-            // Business rule: At least one default must exist
-            if (!workspace.getIsDefault() && !hasOtherDefaults()) {
+            // Business rule: At least one default must exist (only when creating new workspace)
+            boolean isNewWorkspace = (workspace.getId() == null || workspace.getId().isBlank());
+            if (isNewWorkspace && !workspace.getIsDefault() && !hasOtherDefaults()) {
                 workspace.setIsDefault(true);
                 addMessage(FacesMessage.SEVERITY_INFO, "This workspace was set as default because at least one default workspace is required.");
             }
@@ -93,8 +120,10 @@ public class WorkspaceBean {
         }
     }
 
-    public void edit(Workspace selected) {
+    public String edit(Workspace selected) {
         System.out.println("WorkspaceBean.edit() called for: " + selected.getName());
+        
+        // Reset and populate workspace object
         this.workspace = new Workspace();
         this.workspace.setId(selected.getId());
         this.workspace.setName(selected.getName());
@@ -103,8 +132,16 @@ public class WorkspaceBean {
         this.workspace.setOwnerName(selected.getOwnerName());
         this.workspace.setIsDefault(selected.getIsDefault());
         this.workspace.setCreatedAt(selected.getCreatedAt());
+        
         this.editing = true;
-        addMessage(FacesMessage.SEVERITY_INFO, "Editing workspace: " + selected.getName());
+        
+        System.out.println("Workspace object populated: " + this.workspace.getName());
+        System.out.println("Editing mode: " + this.editing);
+        
+        addMessage(FacesMessage.SEVERITY_INFO, "Editing: " + selected.getName());
+        
+        // Return null to stay on same page
+        return null;
     }
 
     public void delete(Workspace selected) {
@@ -151,6 +188,10 @@ public class WorkspaceBean {
     }
 
     public Workspace getWorkspace() {
+        if (workspace == null) {
+            workspace = new Workspace();
+        }
+        System.out.println("getWorkspace() called - Name: " + workspace.getName() + ", ID: " + workspace.getId());
         return workspace;
     }
 

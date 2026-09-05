@@ -589,6 +589,17 @@ html, body {
     border-radius: var(--radius-md);
     border-left: 4px solid var(--success);
 }
+
+.messages ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.messages li {
+    margin: 0;
+    padding: 0;
+}
 .error { 
     color: var(--error); 
     font-size: var(--text-xs); 
