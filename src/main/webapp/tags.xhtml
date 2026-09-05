@@ -70,9 +70,11 @@
                         <f:facet name="header">Actions</f:facet>
                         <div class="table-actions">
                             <h:commandButton value="Edit" action="#{tagBean.edit(item)}"
-                                             styleClass="btn btn-secondary"/>
+                                             styleClass="btn btn-secondary"
+                                             immediate="true"/>
                             <h:commandButton value="Delete" action="#{tagBean.delete(item)}"
                                              styleClass="btn btn-danger"
+                                             immediate="true"
                                              onclick="return confirm('Delete this tag?');"/>
                         </div>
                     </h:column>
