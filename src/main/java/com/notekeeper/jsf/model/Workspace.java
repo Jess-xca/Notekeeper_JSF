@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "workspaces")
+@Table(name = "jsf_workspaces")
 public class Workspace implements Serializable {
 
     private static final long serialVersionUID = 1L;
