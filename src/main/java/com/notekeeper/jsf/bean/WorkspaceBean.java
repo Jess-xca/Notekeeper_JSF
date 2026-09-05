@@ -94,6 +94,7 @@ public class WorkspaceBean {
     }
 
     public void edit(Workspace selected) {
+        System.out.println("WorkspaceBean.edit() called for: " + selected.getName());
         this.workspace = new Workspace();
         this.workspace.setId(selected.getId());
         this.workspace.setName(selected.getName());
@@ -103,9 +104,11 @@ public class WorkspaceBean {
         this.workspace.setIsDefault(selected.getIsDefault());
         this.workspace.setCreatedAt(selected.getCreatedAt());
         this.editing = true;
+        addMessage(FacesMessage.SEVERITY_INFO, "Editing workspace: " + selected.getName());
     }
 
     public void delete(Workspace selected) {
+        System.out.println("WorkspaceBean.delete() called for: " + selected.getName());
         try {
             // Business rule: Must have at least one workspace
             if (workspaces.size() <= 1) {
