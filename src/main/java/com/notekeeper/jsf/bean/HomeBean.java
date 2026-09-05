@@ -23,23 +23,31 @@ public class HomeBean {
 
     @PostConstruct
     public void init() {
+        refreshData();
+    }
+    
+    private void refreshData() {
         tags = tagDAO.findAll();
         workspaces = workspaceDAO.findAll();
     }
 
     public int getTagCount() {
+        refreshData(); // Always get fresh data
         return tags.size();
     }
 
     public int getWorkspaceCount() {
+        refreshData(); // Always get fresh data
         return workspaces.size();
     }
 
     public List<Tag> getTags() {
+        refreshData(); // Always get fresh data
         return tags.size() > 4 ? tags.subList(0, 4) : tags;
     }
 
     public List<Workspace> getWorkspaces() {
+        refreshData(); // Always get fresh data
         return workspaces.size() > 4 ? workspaces.subList(0, 4) : workspaces;
     }
 }

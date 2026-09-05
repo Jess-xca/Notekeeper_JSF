@@ -31,13 +31,18 @@ public class WorkspaceBean {
     
     private void fixMultipleDefaults() {
         try {
+            System.out.println("Starting fixMultipleDefaults()...");
             List<Workspace> allWorkspaces = workspaceDAO.findAll();
+            System.out.println("Found " + allWorkspaces.size() + " total workspaces");
+            
             List<Workspace> defaultWorkspaces = allWorkspaces.stream()
-                .filter(ws -> ws.getIsDefault())
+                .filter(ws -> ws.getIsDefault() != null && ws.getIsDefault())
                 .toList();
             
+            System.out.println("Found " + defaultWorkspaces.size() + " default workspaces");
+            
             if (defaultWorkspaces.size() > 1) {
-                System.out.println("Found " + defaultWorkspaces.size() + " default workspaces. Fixing...");
+                System.out.println("Multiple defaults detected! Fixing...");
                 // Keep first one as default, remove default from others
                 for (int i = 1; i < defaultWorkspaces.size(); i++) {
                     Workspace ws = defaultWorkspaces.get(i);
@@ -45,9 +50,13 @@ public class WorkspaceBean {
                     workspaceDAO.update(ws);
                     System.out.println("Removed default from: " + ws.getName());
                 }
+                System.out.println("Fix completed!");
+            } else {
+                System.out.println("No multiple defaults found.");
             }
         } catch (Exception ex) {
             System.err.println("Error fixing defaults: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -179,6 +188,7 @@ public class WorkspaceBean {
     }
 
     public void reset() {
+        System.out.println("RESET() called! Clearing workspace data.");
         workspace = new Workspace();
         editing = false;
     }
@@ -189,9 +199,10 @@ public class WorkspaceBean {
 
     public Workspace getWorkspace() {
         if (workspace == null) {
+            System.out.println("Workspace was null, creating new one");
             workspace = new Workspace();
         }
-        System.out.println("getWorkspace() called - Name: " + workspace.getName() + ", ID: " + workspace.getId());
+        System.out.println("getWorkspace() called - Name: " + workspace.getName() + ", ID: " + workspace.getId() + ", Owner: " + workspace.getOwnerName());
         return workspace;
     }
 
@@ -205,5 +216,12 @@ public class WorkspaceBean {
 
     public boolean isEditing() {
         return editing;
+    }
+    
+    public String fixDefaults() {
+        fixMultipleDefaults();
+        load(); // Reload data
+        addMessage(FacesMessage.SEVERITY_INFO, "Fixed multiple default workspaces.");
+        return null; // Stay on same page
     }
 }

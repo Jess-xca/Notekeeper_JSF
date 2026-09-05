@@ -13,10 +13,13 @@
                 <h1>Workspaces</h1>
                 <p>Group notes for school, work, or personal projects</p>
             </div>
+            <div>
+                <h:commandButton value="Fix Defaults" action="#{workspaceBean.fixDefaults}" styleClass="btn btn-secondary"/>
+            </div>
         </div>
 
         <h:form id="workspaceForm">
-            <h:messages globalOnly="true" styleClass="messages" infoClass="messages" errorClass="error"/>
+            <h:messages globalOnly="true" styleClass="messages" errorClass="error"/>
 
             <section class="card form-card">
                 <h2 class="form-title">#{workspaceBean.editing ? 'Edit workspace' : 'New workspace'}</h2>

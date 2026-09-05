@@ -32,7 +32,7 @@ public class Tag implements Serializable {
     @NotBlank(message = "Tag color is required.")
     @Pattern(regexp = "^#([A-Fa-f0-9]{6})$", message = "Color must be a hex value such as #2563EB.")
     @Column(nullable = false, length = 7)
-    private String color = "#2563EB";
+    private String color;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

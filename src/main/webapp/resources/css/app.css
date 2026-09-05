@@ -588,6 +588,7 @@ html, body {
     background: var(--success-bg);
     border-radius: var(--radius-md);
     border-left: 4px solid var(--success);
+    display: block;
 }
 
 .messages ul {
@@ -599,6 +600,12 @@ html, body {
 .messages li {
     margin: 0;
     padding: 0;
+    display: block;
+}
+
+/* Ensure only one message shows at a time */
+.messages + .messages {
+    display: none;
 }
 .error { 
     color: var(--error); 
