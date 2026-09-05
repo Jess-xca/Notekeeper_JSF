@@ -48,13 +48,15 @@ public class TagBean {
     public String edit(Tag selected) {
         System.out.println("TagBean.edit() called for: " + selected.getName());
         
-        // Reset and populate tag object
-        this.tag = new Tag();
-        this.tag.setId(selected.getId());
-        this.tag.setName(selected.getName());
-        this.tag.setColor(selected.getColor());
-        this.tag.setCreatedAt(selected.getCreatedAt());
+        // Create a completely new tag object to avoid reference issues
+        Tag editTag = new Tag();
+        editTag.setId(selected.getId());
+        editTag.setName(selected.getName());
+        editTag.setColor(selected.getColor());
+        editTag.setCreatedAt(selected.getCreatedAt());
         
+        // Set the tag reference
+        this.tag = editTag;
         this.editing = true;
         
         System.out.println("Tag object populated: " + this.tag.getName() + ", Color: " + this.tag.getColor());
@@ -62,8 +64,8 @@ public class TagBean {
         
         addMessage(FacesMessage.SEVERITY_INFO, "Editing: " + selected.getName());
         
-        // Return null to stay on same page
-        return null;
+        // Force a page redirect to refresh the view state completely
+        return "tags?faces-redirect=true";
     }
 
     public void delete(Tag selected) {
@@ -95,7 +97,7 @@ public class TagBean {
             System.out.println("Tag was null, creating new one");
             tag = new Tag();
         }
-        System.out.println("getTag() called - Name: " + tag.getName() + ", ID: " + tag.getId() + ", Color: " + tag.getColor());
+        System.out.println("getTag() called - Name: " + tag.getName() + ", ID: " + tag.getId() + ", Color: " + tag.getColor() + ", Editing: " + editing);
         return tag;
     }
 
