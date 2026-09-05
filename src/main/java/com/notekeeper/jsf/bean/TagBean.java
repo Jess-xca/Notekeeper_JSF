@@ -111,12 +111,4 @@ public class TagBean {
         return editing;
     }
 
-    // Debug method to check form binding
-    public String getDebugInfo() {
-        String info = "Editing: " + editing + ", Tag ID: " + (tag != null ? tag.getId() : "null") + 
-                     ", Name: " + (tag != null ? tag.getName() : "null") + 
-                     ", Color: " + (tag != null ? tag.getColor() : "null");
-        System.out.println("DEBUG INFO: " + info);
-        return info;
-    }
 }

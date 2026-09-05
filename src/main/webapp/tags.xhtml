@@ -20,9 +20,6 @@
 
             <section class="card form-card">
                 <h2 class="form-title">#{tagBean.editing ? 'Edit tag' : 'New tag'}</h2>
-                <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 12px;">
-                    DEBUG: #{tagBean.debugInfo}
-                </div>
                 <div class="form-grid">
                     <div class="field">
                         <h:outputLabel for="tagName" value="Name"/>
@@ -41,8 +38,7 @@
                                      requiredMessage="Tag color is required."
                                      styleClass="color-input">
                             <f:validateLength minimum="7" maximum="7"/>
-                            <f:validateRegex pattern="#[A-Fa-f0-9]{6}"/>
-                            <f:validator validatorId="hexColorValidator"/>
+                            <f:validateRegex pattern="^#[A-Fa-f0-9]{6}$"/>
                         </h:inputText>
                         <span class="color-hint">Use a hex color such as #4F46E5</span>
                         <h:message for="tagColor" styleClass="error"/>
