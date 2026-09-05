@@ -37,6 +37,12 @@ public class WorkspaceBean implements Serializable {
             if (workspace.getIsDefault() == null) {
                 workspace.setIsDefault(false);
             }
+            
+            // Business rule: Only one default workspace allowed
+            if (workspace.getIsDefault()) {
+                clearOtherDefaults();
+            }
+            
             if (workspace.getId() == null || workspace.getId().isBlank()) {
                 workspaceDAO.save(workspace);
                 addMessage(FacesMessage.SEVERITY_INFO, "Workspace created successfully.");
@@ -48,6 +54,20 @@ public class WorkspaceBean implements Serializable {
             load();
         } catch (Exception ex) {
             addMessage(FacesMessage.SEVERITY_ERROR, "Unable to save workspace: " + ex.getMessage());
+        }
+    }
+    
+    private void clearOtherDefaults() {
+        try {
+            List<Workspace> allWorkspaces = workspaceDAO.findAll();
+            for (Workspace ws : allWorkspaces) {
+                if (ws.getIsDefault() && !ws.getId().equals(workspace.getId())) {
+                    ws.setIsDefault(false);
+                    workspaceDAO.update(ws);
+                }
+            }
+        } catch (Exception ex) {
+            addMessage(FacesMessage.SEVERITY_WARN, "Warning: Could not clear other default workspaces.");
         }
     }
 

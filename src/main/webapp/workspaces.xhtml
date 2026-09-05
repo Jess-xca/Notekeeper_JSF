@@ -71,7 +71,14 @@
                              rendered="#{not empty workspaceBean.workspaces}">
                     <h:column>
                         <f:facet name="header">Workspace</f:facet>
-                        <h:outputText value="#{item.icon} #{item.name}"/>
+                        <div class="workspace-name-cell">
+                            <span class="workspace-icon">#{item.icon}</span>
+                            <span class="workspace-name">#{item.name}</span>
+                            <span class="default-badge" rendered="#{item.isDefault}">
+                                <i data-lucide="check" class="icon"></i>
+                                Default
+                            </span>
+                        </div>
                     </h:column>
                     <h:column>
                         <f:facet name="header">Owner</f:facet>
@@ -80,11 +87,6 @@
                     <h:column>
                         <f:facet name="header">Description</f:facet>
                         <h:outputText value="#{item.description}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Default</f:facet>
-                        <h:outputText value="#{item.isDefault ? 'Yes' : 'No'}"
-                                      styleClass="#{item.isDefault ? 'default-yes' : ''}"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">Actions</f:facet>
