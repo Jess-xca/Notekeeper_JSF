@@ -5,10 +5,7 @@
                 template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="title">Workspaces</ui:define>
     <ui:define name="head">
-        <style>
-            .workspace-hint { font-size: 0.82rem; color: #6b7280; }
-            .default-yes { color: #059669; font-weight: 700; }
-        </style>
+        <!-- Workspace-specific styles now in app.css -->
     </ui:define>
     <ui:define name="content">
         <div class="page-head">
@@ -21,8 +18,8 @@
         <h:form id="workspaceForm">
             <h:messages globalOnly="true" styleClass="messages" infoClass="messages" errorClass="error"/>
 
-            <section class="card" style="margin-bottom: 20px;">
-                <h2 style="margin-top: 0;">#{workspaceBean.editing ? 'Edit workspace' : 'New workspace'}</h2>
+            <section class="card form-card">
+                <h2 class="form-title">#{workspaceBean.editing ? 'Edit workspace' : 'New workspace'}</h2>
                 <div class="form-grid">
                     <div class="field">
                         <h:outputLabel for="wsName" value="Name"/>
@@ -57,7 +54,7 @@
                         <h:inputTextarea id="wsDescription" value="#{workspaceBean.workspace.description}" rows="3">
                             <f:validateLength maximum="500"/>
                         </h:inputTextarea>
-                        <span class="workspace-hint">A short note about what belongs here</span>
+                        <span class="form-hint">A short note about what belongs here</span>
                         <h:message for="wsDescription" styleClass="error"/>
                     </div>
                 </div>
@@ -90,12 +87,14 @@
                                       styleClass="#{item.isDefault ? 'default-yes' : ''}"/>
                     </h:column>
                     <h:column>
-                        <f:facet name="header"></f:facet>
-                        <h:commandButton value="Edit" action="#{workspaceBean.edit(item)}"
-                                         styleClass="btn btn-secondary"/>
-                        <h:commandButton value="Delete" action="#{workspaceBean.delete(item)}"
-                                         styleClass="btn btn-danger"
-                                         onclick="return confirm('Delete this workspace?');"/>
+                        <f:facet name="header">Actions</f:facet>
+                        <div class="table-actions">
+                            <h:commandButton value="Edit" action="#{workspaceBean.edit(item)}"
+                                             styleClass="btn btn-secondary"/>
+                            <h:commandButton value="Delete" action="#{workspaceBean.delete(item)}"
+                                             styleClass="btn btn-danger"
+                                             onclick="return confirm('Delete this workspace?');"/>
+                        </div>
                     </h:column>
                 </h:dataTable>
                 <h:outputText value="No workspaces yet. Create one to start grouping your notes."

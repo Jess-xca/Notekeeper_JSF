@@ -5,9 +5,7 @@
                 template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="title">Tags</ui:define>
     <ui:define name="head">
-        <style>
-            .color-hint { font-size: 0.82rem; color: #6b7280; }
-        </style>
+        <!-- Form-specific styles now in app.css -->
     </ui:define>
     <ui:define name="content">
         <div class="page-head">
@@ -20,8 +18,8 @@
         <h:form id="tagForm">
             <h:messages globalOnly="true" styleClass="messages" infoClass="messages" errorClass="error"/>
 
-            <section class="card" style="margin-bottom: 20px;">
-                <h2 class="tag-form-title" style="margin-top: 0;">#{tagBean.editing ? 'Edit tag' : 'New tag'}</h2>
+            <section class="card form-card">
+                <h2 class="form-title">#{tagBean.editing ? 'Edit tag' : 'New tag'}</h2>
                 <div class="form-grid">
                     <div class="field">
                         <h:outputLabel for="tagName" value="Name"/>
@@ -59,20 +57,24 @@
                              rendered="#{not empty tagBean.tags}">
                     <h:column>
                         <f:facet name="header">Tag</f:facet>
-                        <span class="swatch" style="background-color: #{item.color};"></span>
-                        <h:outputText value="#{item.name}"/>
+                        <div class="table-tag-cell">
+                            <span class="swatch" style="background-color: #{item.color};"></span>
+                            <h:outputText value="#{item.name}"/>
+                        </div>
                     </h:column>
                     <h:column>
                         <f:facet name="header">Color</f:facet>
                         <h:outputText value="#{item.color}"/>
                     </h:column>
                     <h:column>
-                        <f:facet name="header"></f:facet>
-                        <h:commandButton value="Edit" action="#{tagBean.edit(item)}"
-                                         styleClass="btn btn-secondary"/>
-                        <h:commandButton value="Delete" action="#{tagBean.delete(item)}"
-                                         styleClass="btn btn-danger"
-                                         onclick="return confirm('Delete this tag?');"/>
+                        <f:facet name="header">Actions</f:facet>
+                        <div class="table-actions">
+                            <h:commandButton value="Edit" action="#{tagBean.edit(item)}"
+                                             styleClass="btn btn-secondary"/>
+                            <h:commandButton value="Delete" action="#{tagBean.delete(item)}"
+                                             styleClass="btn btn-danger"
+                                             onclick="return confirm('Delete this tag?');"/>
+                        </div>
                     </h:column>
                 </h:dataTable>
                 <h:outputText value="No tags yet. Create one to organize your pages."
