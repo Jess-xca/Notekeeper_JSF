@@ -139,7 +139,7 @@ NoteKeeper provides one web system for capture, organization, and controlled sha
 | Reliability | Transactions with rollback; validation before persist |
 | Security | Full system: auth, hashing, 2FA, roles; Phase-1: input validation |
 | Maintainability | Layers: model, DAO, bean, validator, view |
-| Portability | Maven WAR on Tomcat 10; PostgreSQL |
+| Portability | Maven WAR on Tomcat 9; PostgreSQL |
 | Integrity | Unique names, required fields, reserved workspace names |
 | Reusability | Shared CSS, DAOs, and validators |
 | Testability | DAO and validators separated from the view |
@@ -219,7 +219,7 @@ Only one default workspace is shown. A workspace named **Personal** is preferred
 
 ### How to run
 
-Requirements: JDK 17, Maven, PostgreSQL (`notekeeper_db`). Set the password in `hibernate.cfg.xml`.
+Requirements: JDK 8, Maven, PostgreSQL (`notekeeper_db`). Set the password in `hibernate.cfg.xml`.
 
 ```
 mvn clean package cargo:run
