@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <h:form id="workspaceForm" prependId="false">
+        <h:form>
             <h:messages globalOnly="true" styleClass="messages" infoClass="messages" errorClass="error"/>
 
             <section class="card form-card">
@@ -92,14 +92,10 @@
                         <f:facet name="header">Actions</f:facet>
                         <div class="table-actions">
                             <h:commandButton value="Edit" action="#{workspaceBean.edit(item)}"
-                                             styleClass="btn btn-secondary">
-                                <f:ajax execute="@this" render="workspaceForm"/>
-                            </h:commandButton>
+                                             styleClass="btn btn-secondary"/>
                             <h:commandButton value="Delete" action="#{workspaceBean.delete(item)}"
                                              styleClass="btn btn-danger"
-                                             onclick="return confirm('Delete this workspace?');">
-                                <f:ajax execute="@this" render="workspaceForm"/>
-                            </h:commandButton>
+                                             onclick="return confirm('Delete this workspace?');"/>
                         </div>
                     </h:column>
                 </h:dataTable>
