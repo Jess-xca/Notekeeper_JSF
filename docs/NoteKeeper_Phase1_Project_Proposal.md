@@ -151,7 +151,7 @@ NoteKeeper provides one web system for capture, organization, and controlled sha
 
 ![NoteKeeper class diagram](images/class-diagram.png)
 
-**Figure 1.** NoteKeeper domain class diagram (full system).
+**Figure 1.** NoteKeeper domain class diagram.
 
 The diagram shows the complete entity model. Phase-1 implements **Tag** and **Workspace** (in the JSF prototype, workspace owner is stored as a name field; in the full system it is a `User` reference).
 
