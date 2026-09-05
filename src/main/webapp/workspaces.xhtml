@@ -70,6 +70,11 @@
                         <div class="workspace-name-cell">
                             <span class="workspace-icon">#{item.icon}</span>
                             <span class="workspace-name">#{item.name}</span>
+                            <h:panelGroup layout="span" styleClass="default-badge"
+                                          rendered="#{item.isDefault}">
+                                <i data-lucide="check" class="icon"></i>
+                                Default
+                            </h:panelGroup>
                         </div>
                     </h:column>
                     <h:column>

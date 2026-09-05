@@ -47,11 +47,9 @@ public class SearchBean {
                 }
             }
             
-            System.out.println("Search for '" + query + "' found " + searchResults.size() + " results");
-            
         } catch (Exception ex) {
-            System.err.println("Search error: " + ex.getMessage());
-            ex.printStackTrace();
+            // keep search resilient; empty results on failure
+            searchResults.clear();
         }
     }
 

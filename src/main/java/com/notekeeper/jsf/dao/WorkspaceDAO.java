@@ -71,7 +71,6 @@ public class WorkspaceDAO {
             transaction = session.beginTransaction();
             session.createNativeQuery(sql).executeUpdate();
             transaction.commit();
-            System.out.println("Executed direct SQL: " + sql);
         } catch (RuntimeException ex) {
             if (transaction != null) {
                 transaction.rollback();

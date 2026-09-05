@@ -3,9 +3,9 @@ package com.notekeeper.jsf.bean;
 import com.notekeeper.jsf.dao.TagDAO;
 import com.notekeeper.jsf.model.Tag;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 
 import java.util.ArrayList;
@@ -46,25 +46,14 @@ public class TagBean {
     }
 
     public String edit(Tag selected) {
-        System.out.println("TagBean.edit() called for: " + selected.getName());
-        
-        // Create a completely new tag object to avoid reference issues
         Tag editTag = new Tag();
         editTag.setId(selected.getId());
         editTag.setName(selected.getName());
         editTag.setColor(selected.getColor());
         editTag.setCreatedAt(selected.getCreatedAt());
-        
-        // Set the tag reference
+
         this.tag = editTag;
         this.editing = true;
-        
-        System.out.println("Tag object populated: " + this.tag.getName() + ", Color: " + this.tag.getColor());
-        System.out.println("Editing mode: " + this.editing);
-        
-        addMessage(FacesMessage.SEVERITY_INFO, "Editing: " + selected.getName());
-        
-        // Force a page redirect to refresh the view state completely
         return "tags?faces-redirect=true";
     }
 
@@ -82,10 +71,8 @@ public class TagBean {
     }
 
     public void reset() {
-        System.out.println("TagBean.reset() called");
         tag = new Tag();
         editing = false;
-        System.out.println("Tag reset to new instance");
     }
 
     private void addMessage(FacesMessage.Severity severity, String text) {
@@ -94,10 +81,8 @@ public class TagBean {
 
     public Tag getTag() {
         if (tag == null) {
-            System.out.println("Tag was null, creating new one");
             tag = new Tag();
         }
-        System.out.println("getTag() called - Name: " + tag.getName() + ", ID: " + tag.getId() + ", Color: " + tag.getColor() + ", Editing: " + editing);
         return tag;
     }
 
@@ -112,5 +97,4 @@ public class TagBean {
     public boolean isEditing() {
         return editing;
     }
-
 }
