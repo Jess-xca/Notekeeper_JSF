@@ -7,16 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>NoteKeeper | <ui:insert name="title">Home</ui:insert></title>
     <h:outputStylesheet name="css/app.css"/>
+    <h:outputScript name="js/lucide.min.js"/>
+    <h:outputScript name="js/icons.js"/>
     <ui:insert name="head"/>
 </h:head>
 <h:body>
     <div class="app">
         <header class="topbar">
             <h:link outcome="home" styleClass="brand">
-                <span class="brand-mark">📓</span>
+                <i data-lucide="notebook-pen" class="icon brand-icon"></i>
                 <span class="brand-name">NoteKeeper</span>
             </h:link>
             <div class="topbar-search">
+                <i data-lucide="search" class="icon search-icon"></i>
                 <input type="text" placeholder="Search pages, workspaces, tags..." disabled="disabled"/>
             </div>
         </header>
@@ -26,15 +29,18 @@
                 <nav class="side-nav">
                     <h:link outcome="home"
                             styleClass="#{view.viewId == '/index.xhtml' ? 'side-link is-active' : 'side-link'}">
-                        <span>📊</span> Dashboard
+                        <i data-lucide="layout-dashboard" class="icon"></i>
+                        <span>Dashboard</span>
                     </h:link>
                     <h:link outcome="workspaces"
                             styleClass="#{view.viewId == '/workspaces.xhtml' ? 'side-link is-active' : 'side-link'}">
-                        <span>🗂️</span> Workspaces
+                        <i data-lucide="folder" class="icon"></i>
+                        <span>Workspaces</span>
                     </h:link>
                     <h:link outcome="tags"
                             styleClass="#{view.viewId == '/tags.xhtml' ? 'side-link is-active' : 'side-link'}">
-                        <span>🏷️</span> Tags
+                        <i data-lucide="tag" class="icon"></i>
+                        <span>Tags</span>
                     </h:link>
                 </nav>
             </aside>
