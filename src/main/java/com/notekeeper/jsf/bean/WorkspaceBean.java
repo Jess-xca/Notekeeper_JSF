@@ -100,20 +100,25 @@ public class WorkspaceBean {
                 }
             }
             
-            // Ensure at least one default exists
-            if (workspace.getIsDefault() == null || !workspace.getIsDefault()) {
-                // Check if any other workspace is default
-                List<Workspace> allOthers = workspaceDAO.findAll().stream()
-                    .filter(ws -> !ws.getId().equals(workspace.getId()))
+            // Only force default if we're creating a new workspace and no defaults exist
+            boolean isNewWorkspace = (workspace.getId() == null || workspace.getId().isBlank());
+            if (isNewWorkspace && (workspace.getIsDefault() == null || !workspace.getIsDefault())) {
+                // Check if any existing workspace is default
+                List<Workspace> existingDefaults = workspaceDAO.findAll().stream()
                     .filter(ws -> ws.getIsDefault() != null && ws.getIsDefault())
                     .toList();
                 
-                if (allOthers.isEmpty()) {
-                    // No other defaults exist, make this one default
+                if (existingDefaults.isEmpty()) {
+                    // No defaults exist, make this new one default
                     workspace.setIsDefault(true);
-                    System.out.println("No other defaults exist - making this default");
+                    System.out.println("No defaults exist - making this new workspace default");
                     addMessage(FacesMessage.SEVERITY_INFO, "This workspace was set as default because at least one default workspace is required.");
                 }
+            }
+            
+            // If editing existing workspace and unchecking default, respect the user's choice
+            if (!isNewWorkspace && (workspace.getIsDefault() == null || !workspace.getIsDefault())) {
+                System.out.println("User unchecked default for existing workspace - respecting choice");
             }
             
             if (workspace.getId() == null || workspace.getId().isBlank()) {
