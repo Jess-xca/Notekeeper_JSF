@@ -5,7 +5,11 @@
                 template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="title">Workspaces</ui:define>
     <ui:define name="head">
-        <!-- Workspace-specific styles now in app.css -->
+        <!-- Internal CSS (Phase-1 requirement): page-local form polish -->
+        <style type="text/css">
+            .form-title { letter-spacing: -0.02em; }
+            .form-hint { display: block; margin-top: 0.35rem; color: #6b7280; font-size: 0.8125rem; }
+        </style>
     </ui:define>
     <ui:define name="content">
         <div class="page-head">

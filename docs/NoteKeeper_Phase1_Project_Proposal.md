@@ -136,10 +136,12 @@ Phase-1 TO-BE slice (what is implemented now):
 
 ```mermaid
 flowchart LR
-    A[Home page] --> B[Tag CRUD]
+    A[Dashboard] --> B[Tag CRUD]
     A --> C[Workspace CRUD]
-    B --> D[(PostgreSQL database via Hibernate)]
+    A --> S[Search results]
+    B --> D[(PostgreSQL via Hibernate)]
     C --> D
+    S --> D
     B --> E[JSF + Bean + Custom validation]
     C --> E
 ```
@@ -171,7 +173,10 @@ flowchart LR
 | P1-02 | Create, read, update, and delete workspaces | Implemented |
 | P1-03 | Validate tag name and color | Implemented |
 | P1-04 | Validate workspace name, owner, and description | Implemented |
-| P1-05 | Persist records with Hibernate using `hibernate.cfg.xml` and `hibernate.xml` | Implemented |
+| P1-05 | Persist records with Hibernate using `hibernate.cfg.xml` | Implemented |
+| P1-06 | Dashboard with live tag and workspace counts | Implemented |
+| P1-07 | Search across tags and workspaces from the top bar | Implemented |
+| P1-08 | Exactly one default workspace; prefer the workspace named Personal | Implemented |
 
 ### 6.3 Non-functional / business constraints
 
@@ -245,6 +250,7 @@ classDiagram
         String name
         String description
         String icon
+        String ownerName
         Boolean isDefault
         LocalDateTime createdAt
     }
@@ -397,27 +403,33 @@ classDiagram
 
 | Type | Where it is applied |
 |---|---|
-| **External CSS** | `src/main/webapp/resources/css/app.css` included with `<h:outputStylesheet>` |
-| **Internal CSS** | `<style>` blocks in `index.xhtml`, `tags.xhtml`, and `workspaces.xhtml` |
-| **Inline CSS** | `style="..."` attributes, for example the color swatch `style="background-color: #{item.color};"` and selected headings |
+| **External CSS** | `src/main/webapp/resources/css/app.css` included with `<h:outputStylesheet>` in the layout template |
+| **Internal CSS** | `<style>` blocks in the `head` of `tags.xhtml` and `workspaces.xhtml` |
+| **Inline CSS** | `style="..."` on color swatches (`background-color: #{item.color}`) and selected dashboard headings |
 
-### 9.5 How to run the practical project
+### 9.5 Default workspace rule (Phase-1)
 
-Requirements: JDK 17, Maven, and PostgreSQL (`notekeeper_db`). Set `DATABASE_PASSWORD` before starting.
+- A workspace named **Personal** is treated as the default workspace.
+- Only one workspace shows the Default badge at a time.
+- The badge uses a real JSF component (`h:panelGroup` with `rendered="#{item.isDefault}"`), not a plain HTML `span`.
+
+### 9.6 How to run the practical project
+
+Requirements: JDK 17, Maven, and PostgreSQL (`notekeeper_db`). Configure the database password in `src/main/resources/hibernate.cfg.xml`.
 
 ```bash
 cd JSF
-mvn clean package
-mvn cargo:run
+mvn clean package cargo:run
 ```
 
 Then open:
 
-- Home: http://localhost:8081/notekeeper-jsf/
+- Dashboard: http://localhost:8081/notekeeper-jsf/
 - Tags: http://localhost:8081/notekeeper-jsf/tags.xhtml
 - Workspaces: http://localhost:8081/notekeeper-jsf/workspaces.xhtml
+- Search: use the top search bar, or open http://localhost:8081/notekeeper-jsf/search.xhtml
 
-Sample records are created automatically on first start.
+Sample records are created automatically when the tables are empty.
 
 ---
 
@@ -440,7 +452,7 @@ The repository must remain **public** so the lecturer can open the source code w
 
 1. **0:00–1:00** – Introduce yourself, the project name, and the problem NoteKeeper solves. Show your face with the camera.  
 2. **1:00–3:00** – Walk through this proposal: abstract, problem, scope, AS-IS vs TO-BE, business requirements, and class diagram.  
-3. **3:00–8:00** – Run the JSF app. Show Tag CRUD: create a valid tag, try invalid data (short name, bad color, duplicate name), then edit and delete. Repeat for Workspace CRUD, including a reserved name such as `admin`. Point to external, internal, and inline CSS in the browser/source.  
+3. **3:00–8:00** – Run the JSF app. Show the dashboard, then Tag CRUD: create a valid tag, try invalid data (short name, bad color, duplicate name), then edit and delete. Repeat for Workspace CRUD, including a reserved name such as `admin`, and show that only **Personal** has the Default badge. Briefly show search from the top bar. Point to external, internal, and inline CSS in the browser/source.  
 4. **8:00–10:00** – Show the GitHub repository, summarize future work, and close.
 
 After recording, set the Google Vid sharing permission to anyone with the link, then paste the URL in the field above and in the README.
