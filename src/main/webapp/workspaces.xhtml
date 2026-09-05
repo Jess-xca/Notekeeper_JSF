@@ -4,9 +4,6 @@
                 xmlns:ui="jakarta.faces.facelets"
                 template="/WEB-INF/templates/layout.xhtml">
     <ui:define name="title">Workspaces</ui:define>
-    <ui:define name="head">
-        <!-- Workspace-specific styles now in app.css -->
-    </ui:define>
     <ui:define name="content">
         <div class="page-head">
             <div>
@@ -15,35 +12,25 @@
             </div>
         </div>
 
-        <h:form transient="true">
+        <h:form>
             <h:messages globalOnly="true" styleClass="messages" infoClass="messages" errorClass="error"/>
 
             <section class="card form-card">
-                <h2 class="form-title">#{workspaceBean.editing ? 'Edit workspace' : 'New workspace'}</h2>
+                <h2 class="form-title">New workspace</h2>
                 <div class="form-grid">
                     <div class="field">
                         <h:outputLabel for="wsName" value="Name"/>
-                        <h:inputText id="wsName" value="#{workspaceBean.workspace.name}" required="true"
-                                     requiredMessage="Workspace name is required.">
-                            <f:validateLength minimum="3" maximum="100"/>
-                            <f:validator validatorId="workspaceNameValidator"/>
-                        </h:inputText>
+                        <h:inputText id="wsName" value="#{workspaceBean.workspace.name}" required="true"/>
                         <h:message for="wsName" styleClass="error"/>
                     </div>
                     <div class="field">
                         <h:outputLabel for="wsOwner" value="Owner"/>
-                        <h:inputText id="wsOwner" value="#{workspaceBean.workspace.ownerName}" required="true"
-                                     requiredMessage="Owner name is required.">
-                            <f:validateLength minimum="2" maximum="80"/>
-                        </h:inputText>
+                        <h:inputText id="wsOwner" value="#{workspaceBean.workspace.ownerName}" required="true"/>
                         <h:message for="wsOwner" styleClass="error"/>
                     </div>
                     <div class="field">
                         <h:outputLabel for="wsIcon" value="Icon"/>
-                        <h:inputText id="wsIcon" value="#{workspaceBean.workspace.icon}">
-                            <f:validateLength maximum="10"/>
-                        </h:inputText>
-                        <h:message for="wsIcon" styleClass="error"/>
+                        <h:inputText id="wsIcon" value="#{workspaceBean.workspace.icon}"/>
                     </div>
                     <div class="field">
                         <h:outputLabel for="wsDefault" value="Default workspace"/>
@@ -51,56 +38,51 @@
                     </div>
                     <div class="field full">
                         <h:outputLabel for="wsDescription" value="Description"/>
-                        <h:inputTextarea id="wsDescription" value="#{workspaceBean.workspace.description}" rows="3">
-                            <f:validateLength maximum="500"/>
-                        </h:inputTextarea>
-                        <span class="form-hint">A short note about what belongs here</span>
-                        <h:message for="wsDescription" styleClass="error"/>
+                        <h:inputTextarea id="wsDescription" value="#{workspaceBean.workspace.description}" rows="3"/>
                     </div>
                 </div>
                 <div class="actions">
-                    <h:commandButton value="#{workspaceBean.editing ? 'Save changes' : 'Create workspace'}"
-                                     action="#{workspaceBean.save}" styleClass="btn btn-primary"/>
-                    <h:commandButton value="Cancel" action="#{workspaceBean.reset}" immediate="true"
-                                     styleClass="btn btn-secondary"/>
+                    <h:commandButton value="Create workspace" action="#{workspaceBean.save}" styleClass="btn btn-primary"/>
+                    <h:commandButton value="Cancel" action="#{workspaceBean.reset}" immediate="true" styleClass="btn btn-secondary"/>
                 </div>
             </section>
 
             <section class="card">
-                <h:dataTable value="#{workspaceBean.workspaces}" var="item" styleClass="table"
-                             rendered="#{not empty workspaceBean.workspaces}">
-                    <h:column>
-                        <f:facet name="header">Workspace</f:facet>
-                        <div class="workspace-name-cell">
-                            <span class="workspace-icon">#{item.icon}</span>
-                            <span class="workspace-name">#{item.name}</span>
-                            <span class="default-badge" rendered="#{item.isDefault}">
-                                <i data-lucide="check" class="icon"></i>
-                                Default
-                            </span>
-                        </div>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Owner</f:facet>
-                        <h:outputText value="#{item.ownerName}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Description</f:facet>
-                        <h:outputText value="#{item.description}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Actions</f:facet>
-                        <div class="table-actions">
-                            <h:commandButton value="Edit" action="#{workspaceBean.edit(item)}"
-                                             styleClass="btn btn-secondary"/>
-                            <h:commandButton value="Delete" action="#{workspaceBean.delete(item)}"
-                                             styleClass="btn btn-danger"
-                                             onclick="return confirm('Delete this workspace?');"/>
-                        </div>
-                    </h:column>
-                </h:dataTable>
-                <h:outputText value="No workspaces yet. Create one to start grouping your notes."
-                              styleClass="empty" rendered="#{empty workspaceBean.workspaces}"/>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Workspace</th>
+                            <th>Owner</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ui:repeat value="#{workspaceBean.workspaces}" var="item">
+                            <tr>
+                                <td>
+                                    <div class="workspace-name-cell">
+                                        <span class="workspace-icon">#{item.icon}</span>
+                                        <span class="workspace-name">#{item.name}</span>
+                                        <span class="default-badge" rendered="#{item.isDefault}">
+                                            <i data-lucide="check" class="icon"></i>
+                                            Default
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>#{item.ownerName}</td>
+                                <td>#{item.description}</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <h:commandButton value="Edit" action="#{workspaceBean.edit(item)}" styleClass="btn btn-secondary"/>
+                                        <h:commandButton value="Delete" action="#{workspaceBean.delete(item)}" styleClass="btn btn-danger" onclick="return confirm('Delete this workspace?');"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ui:repeat>
+                    </tbody>
+                </table>
+                <h:outputText value="No workspaces yet." styleClass="empty" rendered="#{empty workspaceBean.workspaces}"/>
             </section>
         </h:form>
     </ui:define>
