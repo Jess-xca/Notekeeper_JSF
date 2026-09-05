@@ -10,7 +10,7 @@
     </ui:define>
     <ui:define name="content">
         <section class="welcome" style="background: linear-gradient(to right, #4f46e5, #9333ea);">
-            <h1>Welcome back 👋</h1>
+            <h1>Welcome back</h1>
             <p>Here’s what’s happening with your notes today</p>
         </section>
 
@@ -21,7 +21,9 @@
                     <strong>#{homeBean.workspaceCount}</strong>
                     <h:link outcome="workspaces" value="View all →" styleClass="card-link" style="color: #059669;"/>
                 </div>
-                <div class="icon-circle icon-green">🗂️</div>
+                <div class="icon-circle icon-green">
+                    <i data-lucide="folder" class="icon"></i>
+                </div>
             </article>
             <article class="card stat">
                 <div>
@@ -29,7 +31,9 @@
                     <strong>#{homeBean.tagCount}</strong>
                     <h:link outcome="tags" value="View all →" styleClass="card-link" style="color: #2563eb;"/>
                 </div>
-                <div class="icon-circle icon-blue">🏷️</div>
+                <div class="icon-circle icon-blue">
+                    <i data-lucide="tag" class="icon"></i>
+                </div>
             </article>
         </section>
 
@@ -39,7 +43,7 @@
                 <div class="list">
                     <ui:repeat value="#{homeBean.workspaces}" var="workspace">
                         <div class="list-item">
-                            <span>#{workspace.icon}</span>
+                            <i data-lucide="folder" class="icon"></i>
                             <div>
                                 <h3>#{workspace.name}</h3>
                                 <p>#{workspace.description}</p>
