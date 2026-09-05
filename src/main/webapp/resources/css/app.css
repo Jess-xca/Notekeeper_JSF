@@ -55,12 +55,30 @@ html, body {
     color: var(--gray-900);
 }
 
-.brand-mark { font-size: 1.5rem; }
 .brand-name { font-size: 1.2rem; font-weight: 700; }
+.brand-icon { color: var(--indigo); width: 22px; height: 22px; }
+
+.icon {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+    flex-shrink: 0;
+}
 
 .topbar-search {
     flex: 1;
     max-width: 520px;
+    position: relative;
+}
+
+.topbar-search .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-500);
+    width: 16px;
+    height: 16px;
 }
 
 .topbar-search input {
@@ -68,7 +86,7 @@ html, body {
     border: 1px solid var(--gray-200);
     background: var(--gray-50);
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 8px 12px 8px 36px;
     font: inherit;
     color: var(--gray-500);
 }
@@ -164,9 +182,10 @@ html, body {
     font-size: 1.4rem;
 }
 
-.icon-green { background: var(--green-100); }
-.icon-blue { background: var(--blue-100); }
-.icon-yellow { background: var(--yellow-100); }
+.icon-green { background: var(--green-100); color: var(--green-600); }
+.icon-blue { background: var(--blue-100); color: var(--blue-600); }
+.icon-yellow { background: var(--yellow-100); color: var(--yellow-600); }
+.icon-circle .icon { width: 22px; height: 22px; }
 
 .card-link {
     display: inline-block;
