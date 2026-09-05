@@ -31,34 +31,23 @@ public class WorkspaceBean {
     
     private void fixMultipleDefaults() {
         try {
-            System.out.println("Starting AGGRESSIVE fixMultipleDefaults()...");
+            System.out.println("Starting NUCLEAR fixMultipleDefaults()...");
+            
+            // NUCLEAR OPTION: Direct SQL updates to bypass any ORM issues
+            workspaceDAO.executeDirectSQL("UPDATE jsf_workspaces SET isDefault = false");
+            System.out.println("NUCLEAR: Set ALL workspaces to non-default via direct SQL");
+            
+            // Get first workspace and set it as default via direct SQL
             List<Workspace> allWorkspaces = workspaceDAO.findAll();
-            System.out.println("Found " + allWorkspaces.size() + " total workspaces");
-            
-            // Print all workspace states for debugging
-            for (Workspace ws : allWorkspaces) {
-                System.out.println("Workspace: " + ws.getName() + " - Default: " + ws.getIsDefault());
-            }
-            
-            // AGGRESSIVE FIX: Set ALL to false, then set only the first one to true
-            System.out.println("Setting ALL workspaces to non-default first...");
-            for (Workspace ws : allWorkspaces) {
-                ws.setIsDefault(false);
-                workspaceDAO.update(ws);
-                System.out.println("Set " + ws.getName() + " to non-default");
-            }
-            
-            // Now set the first (oldest) workspace as default
             if (!allWorkspaces.isEmpty()) {
-                Workspace firstWorkspace = allWorkspaces.get(0); // First in list (ordered by name)
-                firstWorkspace.setIsDefault(true);
-                workspaceDAO.update(firstWorkspace);
-                System.out.println("Set " + firstWorkspace.getName() + " as THE ONLY default");
+                Workspace firstWorkspace = allWorkspaces.get(0);
+                workspaceDAO.executeDirectSQL("UPDATE jsf_workspaces SET isDefault = true WHERE id = '" + firstWorkspace.getId() + "'");
+                System.out.println("NUCLEAR: Set " + firstWorkspace.getName() + " as THE ONLY default via direct SQL");
             }
             
-            System.out.println("AGGRESSIVE fix completed!");
+            System.out.println("NUCLEAR fix completed!");
         } catch (Exception ex) {
-            System.err.println("Error in aggressive fix: " + ex.getMessage());
+            System.err.println("Error in nuclear fix: " + ex.getMessage());
             ex.printStackTrace();
         }
     }

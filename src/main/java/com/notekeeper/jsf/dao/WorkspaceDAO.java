@@ -64,4 +64,19 @@ public class WorkspaceDAO {
             throw ex;
         }
     }
+
+    public void executeDirectSQL(String sql) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.createNativeQuery(sql).executeUpdate();
+            transaction.commit();
+            System.out.println("Executed direct SQL: " + sql);
+        } catch (RuntimeException ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw ex;
+        }
+    }
 }
