@@ -62,7 +62,7 @@ public class TagDAO {
             transaction = session.beginTransaction();
             Tag tag = session.get(Tag.class, id);
             if (tag != null) {
-                session.remove(tag);
+                session.delete(tag);
             }
             transaction.commit();
         } catch (RuntimeException ex) {

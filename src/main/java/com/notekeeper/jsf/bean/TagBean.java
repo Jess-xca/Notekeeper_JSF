@@ -2,11 +2,11 @@ package com.notekeeper.jsf.bean;
 
 import com.notekeeper.jsf.dao.TagDAO;
 import com.notekeeper.jsf.model.Tag;
-import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Named;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class TagBean {
 
     public void save() {
         try {
-            if (tag.getId() == null || tag.getId().isBlank()) {
+            if (tag.getId() == null || tag.getId().trim().isEmpty()) {
                 tagDAO.save(tag);
                 addMessage(FacesMessage.SEVERITY_INFO, "Tag created successfully.");
             } else {

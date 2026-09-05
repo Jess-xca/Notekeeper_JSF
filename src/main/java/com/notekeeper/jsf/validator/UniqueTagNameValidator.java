@@ -2,12 +2,12 @@ package com.notekeeper.jsf.validator;
 
 import com.notekeeper.jsf.dao.TagDAO;
 import com.notekeeper.jsf.model.Tag;
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.context.FacesContext;
-import jakarta.faces.validator.FacesValidator;
-import jakarta.faces.validator.Validator;
-import jakarta.faces.validator.ValidatorException;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.FacesValidator;
+import javax.faces.validator.Validator;
+import javax.faces.validator.ValidatorException;
 
 @FacesValidator("uniqueTagNameValidator")
 public class UniqueTagNameValidator implements Validator<String> {
@@ -16,7 +16,7 @@ public class UniqueTagNameValidator implements Validator<String> {
 
     @Override
     public void validate(FacesContext context, UIComponent component, String value) {
-        if (value == null || value.isBlank()) {
+        if (value == null || value.trim().isEmpty()) {
             return;
         }
 

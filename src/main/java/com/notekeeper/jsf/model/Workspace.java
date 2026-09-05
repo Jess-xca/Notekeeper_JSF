@@ -1,12 +1,12 @@
 package com.notekeeper.jsf.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -59,7 +59,7 @@ public class Workspace implements Serializable {
 
     @PrePersist
     protected void onCreate() {
-        if (id == null || id.isBlank()) {
+        if (id == null || id.trim().isEmpty()) {
             this.id = UUID.randomUUID().toString();
         }
         if (createdAt == null) {

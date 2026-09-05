@@ -4,9 +4,9 @@ import com.notekeeper.jsf.dao.TagDAO;
 import com.notekeeper.jsf.dao.WorkspaceDAO;
 import com.notekeeper.jsf.model.Tag;
 import com.notekeeper.jsf.model.Workspace;
-import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;

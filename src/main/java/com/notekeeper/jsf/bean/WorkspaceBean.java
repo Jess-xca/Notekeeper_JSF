@@ -2,11 +2,11 @@ package com.notekeeper.jsf.bean;
 
 import com.notekeeper.jsf.dao.WorkspaceDAO;
 import com.notekeeper.jsf.model.Workspace;
-import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Named;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class WorkspaceBean {
 
     public void save() {
         try {
-            boolean isNew = workspace.getId() == null || workspace.getId().isBlank();
+            boolean isNew = workspace.getId() == null || workspace.getId().trim().isEmpty();
             List<Workspace> existing = workspaceDAO.findAll();
 
             // Only "Personal" is the default workspace
@@ -143,7 +143,7 @@ public class WorkspaceBean {
     private void clearOtherDefaults(String keepId) {
         for (Workspace ws : workspaceDAO.findAll()) {
             if (Boolean.TRUE.equals(ws.getIsDefault())
-                    && (keepId == null || keepId.isBlank() || !ws.getId().equals(keepId))) {
+                    && (keepId == null || keepId.trim().isEmpty() || !ws.getId().equals(keepId))) {
                 ws.setIsDefault(false);
                 workspaceDAO.update(ws);
             }

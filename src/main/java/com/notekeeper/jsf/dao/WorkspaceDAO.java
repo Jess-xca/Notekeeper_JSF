@@ -54,7 +54,7 @@ public class WorkspaceDAO {
             transaction = session.beginTransaction();
             Workspace workspace = session.get(Workspace.class, id);
             if (workspace != null) {
-                session.remove(workspace);
+                session.delete(workspace);
             }
             transaction.commit();
         } catch (RuntimeException ex) {
