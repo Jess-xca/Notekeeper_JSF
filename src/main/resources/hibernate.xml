@@ -6,8 +6,7 @@
 <hibernate-configuration>
 
     <!-- a SessionFactory instance listed as /jndi/name -->
-    <session-factory
-            name="java:hibernate/SessionFactory">
+    <session-factory>
 
         <!-- properties -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
