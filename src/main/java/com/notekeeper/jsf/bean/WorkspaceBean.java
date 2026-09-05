@@ -49,14 +49,7 @@ public class WorkspaceBean {
     }
 
     public void load() {
-        System.out.println("=== LOADING WORKSPACES ===");
         workspaces = workspaceDAO.findAll();
-        
-        System.out.println("Loaded " + workspaces.size() + " workspaces:");
-        for (Workspace ws : workspaces) {
-            System.out.println("- Name: '" + ws.getName() + "' | isDefault: " + ws.getIsDefault() + " | Class: " + (ws.getIsDefault() != null ? ws.getIsDefault().getClass().getSimpleName() : "null"));
-        }
-        System.out.println("=========================");
     }
 
     public void save() {
