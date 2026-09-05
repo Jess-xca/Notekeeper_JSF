@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <h:form id="tagForm">
+        <h:form id="tagForm" prependId="false">
             <h:messages globalOnly="true" styleClass="messages" infoClass="messages" errorClass="error"/>
 
             <section class="card form-card">
@@ -70,15 +70,13 @@
                         <f:facet name="header">Actions</f:facet>
                         <div class="table-actions">
                             <h:commandButton value="Edit" action="#{tagBean.edit(item)}"
-                                             styleClass="btn btn-secondary"
-                                             immediate="true">
-                                <f:ajax execute="@this" render="@form"/>
+                                             styleClass="btn btn-secondary">
+                                <f:ajax execute="@this" render="tagForm"/>
                             </h:commandButton>
                             <h:commandButton value="Delete" action="#{tagBean.delete(item)}"
                                              styleClass="btn btn-danger"
-                                             immediate="true"
                                              onclick="return confirm('Delete this tag?');">
-                                <f:ajax execute="@this" render="@form"/>
+                                <f:ajax execute="@this" render="tagForm"/>
                             </h:commandButton>
                         </div>
                     </h:column>

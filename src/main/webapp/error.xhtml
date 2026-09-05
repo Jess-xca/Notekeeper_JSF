@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+<head>
+    <title>Session Expired - NoteKeeper</title>
+    <h:outputStylesheet library="css" name="app.css"/>
+</head>
+<body>
+    <div class="app">
+        <div class="content" style="text-align: center; padding: 100px 20px;">
+            <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <h1>Session Expired</h1>
+                <p>Your session has expired or the page could not be restored.</p>
+                <p>Please return to the home page to continue.</p>
+                <h:link outcome="home" styleClass="btn btn-primary">
+                    Return to Dashboard
+                </h:link>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
