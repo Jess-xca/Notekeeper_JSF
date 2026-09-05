@@ -216,12 +216,12 @@ html, body {
 }
 
 .welcome {
-    background: #fff;
-    border: 1px solid var(--gray-200);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
     border-radius: var(--radius-lg);
     padding: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .welcome h1 { 
@@ -229,11 +229,11 @@ html, body {
     font-size: var(--text-3xl); 
     font-weight: 700;
     letter-spacing: -0.025em;
-    color: var(--gray-800);
+    color: #fff;
 }
 .welcome p { 
     margin: var(--spacing-sm) 0 0; 
-    color: var(--gray-600); 
+    color: rgba(255, 255, 255, 0.9); 
     font-size: var(--text-lg);
 }
 

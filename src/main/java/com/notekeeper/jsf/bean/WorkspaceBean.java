@@ -38,9 +38,24 @@ public class WorkspaceBean implements Serializable {
                 workspace.setIsDefault(false);
             }
             
+            // Business rule: First workspace automatically becomes default
+            List<Workspace> allWorkspaces = workspaceDAO.findAll();
+            boolean isFirstWorkspace = (workspace.getId() == null || workspace.getId().isBlank()) 
+                && allWorkspaces.isEmpty();
+            
+            if (isFirstWorkspace) {
+                workspace.setIsDefault(true);
+            }
+            
             // Business rule: Only one default workspace allowed
             if (workspace.getIsDefault()) {
                 clearOtherDefaults();
+            }
+            
+            // Business rule: At least one default must exist
+            if (!workspace.getIsDefault() && !hasOtherDefaults()) {
+                workspace.setIsDefault(true);
+                addMessage(FacesMessage.SEVERITY_INFO, "This workspace was set as default because at least one default workspace is required.");
             }
             
             if (workspace.getId() == null || workspace.getId().isBlank()) {
@@ -70,6 +85,16 @@ public class WorkspaceBean implements Serializable {
             addMessage(FacesMessage.SEVERITY_WARN, "Warning: Could not clear other default workspaces.");
         }
     }
+    
+    private boolean hasOtherDefaults() {
+        try {
+            List<Workspace> allWorkspaces = workspaceDAO.findAll();
+            return allWorkspaces.stream()
+                .anyMatch(ws -> ws.getIsDefault() && !ws.getId().equals(workspace.getId()));
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 
     public void edit(Workspace selected) {
         this.workspace = new Workspace();
@@ -85,6 +110,26 @@ public class WorkspaceBean implements Serializable {
 
     public void delete(Workspace selected) {
         try {
+            // Business rule: Must have at least one workspace
+            if (workspaces.size() <= 1) {
+                addMessage(FacesMessage.SEVERITY_ERROR, "Cannot delete the last workspace. At least one workspace is required.");
+                return;
+            }
+            
+            // If deleting the default workspace, make another one default
+            if (selected.getIsDefault()) {
+                Workspace nextDefault = workspaces.stream()
+                    .filter(ws -> !ws.getId().equals(selected.getId()))
+                    .findFirst()
+                    .orElse(null);
+                
+                if (nextDefault != null) {
+                    nextDefault.setIsDefault(true);
+                    workspaceDAO.update(nextDefault);
+                    addMessage(FacesMessage.SEVERITY_INFO, "'" + nextDefault.getName() + "' is now the default workspace.");
+                }
+            }
+            
             workspaceDAO.delete(selected.getId());
             addMessage(FacesMessage.SEVERITY_INFO, "Workspace deleted successfully.");
             if (workspace.getId() != null && workspace.getId().equals(selected.getId())) {
