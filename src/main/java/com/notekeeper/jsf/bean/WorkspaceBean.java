@@ -31,31 +31,34 @@ public class WorkspaceBean {
     
     private void fixMultipleDefaults() {
         try {
-            System.out.println("Starting fixMultipleDefaults()...");
+            System.out.println("Starting AGGRESSIVE fixMultipleDefaults()...");
             List<Workspace> allWorkspaces = workspaceDAO.findAll();
             System.out.println("Found " + allWorkspaces.size() + " total workspaces");
             
-            List<Workspace> defaultWorkspaces = allWorkspaces.stream()
-                .filter(ws -> ws.getIsDefault() != null && ws.getIsDefault())
-                .toList();
-            
-            System.out.println("Found " + defaultWorkspaces.size() + " default workspaces");
-            
-            if (defaultWorkspaces.size() > 1) {
-                System.out.println("Multiple defaults detected! Fixing...");
-                // Keep first one as default, remove default from others
-                for (int i = 1; i < defaultWorkspaces.size(); i++) {
-                    Workspace ws = defaultWorkspaces.get(i);
-                    ws.setIsDefault(false);
-                    workspaceDAO.update(ws);
-                    System.out.println("Removed default from: " + ws.getName());
-                }
-                System.out.println("Fix completed!");
-            } else {
-                System.out.println("No multiple defaults found.");
+            // Print all workspace states for debugging
+            for (Workspace ws : allWorkspaces) {
+                System.out.println("Workspace: " + ws.getName() + " - Default: " + ws.getIsDefault());
             }
+            
+            // AGGRESSIVE FIX: Set ALL to false, then set only the first one to true
+            System.out.println("Setting ALL workspaces to non-default first...");
+            for (Workspace ws : allWorkspaces) {
+                ws.setIsDefault(false);
+                workspaceDAO.update(ws);
+                System.out.println("Set " + ws.getName() + " to non-default");
+            }
+            
+            // Now set the first (oldest) workspace as default
+            if (!allWorkspaces.isEmpty()) {
+                Workspace firstWorkspace = allWorkspaces.get(0); // First in list (ordered by name)
+                firstWorkspace.setIsDefault(true);
+                workspaceDAO.update(firstWorkspace);
+                System.out.println("Set " + firstWorkspace.getName() + " as THE ONLY default");
+            }
+            
+            System.out.println("AGGRESSIVE fix completed!");
         } catch (Exception ex) {
-            System.err.println("Error fixing defaults: " + ex.getMessage());
+            System.err.println("Error in aggressive fix: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -227,4 +230,12 @@ public class WorkspaceBean {
         return editing;
     }
     
+    // Manual fix method for testing
+    public String forceFixDefaults() {
+        System.out.println("MANUALLY TRIGGERED DEFAULT FIX");
+        fixMultipleDefaults();
+        load(); // Reload data
+        addMessage(FacesMessage.SEVERITY_INFO, "Forced fix applied - only one workspace should be default now");
+        return null;
+    }
 }
