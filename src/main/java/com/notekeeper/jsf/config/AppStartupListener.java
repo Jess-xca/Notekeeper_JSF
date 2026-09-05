@@ -29,7 +29,7 @@ public class AppStartupListener implements ServletContextListener {
                 workspaceDAO.save(new Workspace("Business", "Professional workspace for work-related notes.", "💼", "Me", false));
             }
         } catch (Exception ex) {
-            System.err.println("Unable to seed demo data: " + ex.getMessage());
+            // Seed data is optional; app can start with empty tables.
         }
     }
 
