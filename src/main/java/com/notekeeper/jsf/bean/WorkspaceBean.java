@@ -5,18 +5,15 @@ import com.notekeeper.jsf.model.Workspace;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.ViewScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Named("workspaceBean")
-@ViewScoped
-public class WorkspaceBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@RequestScoped
+public class WorkspaceBean {
 
     private final WorkspaceDAO workspaceDAO = new WorkspaceDAO();
     private Workspace workspace = new Workspace();

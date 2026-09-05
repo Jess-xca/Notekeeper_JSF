@@ -5,18 +5,15 @@ import com.notekeeper.jsf.model.Tag;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.ViewScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Named("tagBean")
-@ViewScoped
-public class TagBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@RequestScoped
+public class TagBean {
 
     private final TagDAO tagDAO = new TagDAO();
     private Tag tag = new Tag();

@@ -8,15 +8,12 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Named("homeBean")
 @RequestScoped
-public class HomeBean implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class HomeBean {
 
     private final TagDAO tagDAO = new TagDAO();
     private final WorkspaceDAO workspaceDAO = new WorkspaceDAO();
