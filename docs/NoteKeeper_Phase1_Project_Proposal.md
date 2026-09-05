@@ -1,464 +1,253 @@
-# NoteKeeper Phase-1 Project Proposal
+# NoteKeeper — Phase-1 Project Proposal
 
-**Project title:** NoteKeeper – A Collaborative Note-Taking and Workspace System  
-**Student / author:** Jessica Irakoze  
-**Repository (public GitHub link):** https://github.com/Jess-xca/Notekeeper_JSF  
-**Video link (Google Vid, screen + camera, 5–10 minutes):** `[PASTE GOOGLE VID LINK HERE]`  
-**Technology stack for this phase:** JSF, Hibernate, PostgreSQL, Maven, Jakarta Validation  
+| | |
+|---|---|
+| **Project** | NoteKeeper – Collaborative Note-Taking and Workspace System |
+| **Author** | Jessica Irakoze |
+| **GitHub** | https://github.com/Jess-xca/Notekeeper_JSF |
+| **Video** | *[Add Google Vid link after recording]* |
+| **Stack** | JSF, Hibernate, PostgreSQL, Maven, Jakarta Validation |
 
 ---
 
 ## 1. Abstract
 
-NoteKeeper is a web-based note-taking platform designed for students, professionals, and small teams who need one place to write, organize, share, and protect their notes. The full product supports user accounts, workspaces, pages, tags, attachments, sharing, notifications, two-factor authentication, and administration.
+NoteKeeper is a web application for organizing notes in workspaces, labeling them with tags, and sharing them securely. The full system will include accounts, pages, sharing, notifications, and administration.
 
-Phase-1 focuses on project definition and a practical proof of concept. The documentation below describes the problem, scope, current versus future process, business requirements, software qualities, and the initial class model for all planned entities. The practical implementation uses **JSF and Hibernate** to perform full **CRUD** on two selected entities: **Tag** and **Workspace**. The prototype applies three validation types (JSF built-in validators, Bean Validation, and custom validators) and three CSS types (external, internal, and inline).
+**Phase-1** documents the project and delivers a working JSF + Hibernate prototype with full CRUD on two entities: **Tag** and **Workspace**. The prototype uses three validation types and three CSS types, as required.
 
 ---
 
 ## 2. Problem Statement
 
-People currently keep notes in many disconnected places: paper notebooks, phone memos, email drafts, chat messages, and generic cloud documents. This creates several problems:
+Notes are often scattered across paper, phone apps, documents, and chat. That leads to:
 
-1. Notes are hard to find later because there is no consistent structure, tagging, or workspace grouping.
-2. Collaboration is unsafe or incomplete. Sending a file or sharing a whole folder often gives more access than needed.
-3. Important notes can be lost when a device fails or an account is closed, and there is no clear ownership or archive process.
-4. Security is weak. Shared passwords, no two-factor authentication, and no role control expose private content.
-5. Administrators of a class, office, or organization cannot see or manage users, workspaces, and content from one system.
+1. Poor findability — no consistent structure, tags, or workspaces  
+2. Weak collaboration — sharing a whole file often gives too much or too little access  
+3. Risk of loss — no clear ownership or backup process  
+4. Weak security — little role control and no strong authentication  
+5. No central administration for users and content  
 
-NoteKeeper addresses this by providing a dedicated system where notes (pages) live inside workspaces, can be labeled with tags, shared with controlled roles, and protected through authentication and user management.
+NoteKeeper solves this by keeping notes in workspaces, organizing them with tags, and controlling access through accounts and roles.
 
 ---
 
-## 3. Scope of the Project
+## 3. Scope
 
-### 3.1 In scope (full project)
+### Full project (planned)
 
-- User registration, login, password reset, Google login, and email-based 2FA
-- User profiles, roles (`USER`, `EDITOR`, `ADMIN`), and location data
-- Workspaces with members and roles (`OWNER`, `EDITOR`, `VIEWER`)
-- Pages with content, icons, cover images, favorites, archive, and attachments
-- Tags and page-tag relationships
-- Page sharing and workspace invitations
-- Notifications
-- Admin management of users, pages, and workspaces
+- Authentication (login, registration, password reset, Google login, 2FA)  
+- Users, roles, and profiles  
+- Workspaces and members  
+- Pages, tags, attachments  
+- Sharing, invitations, and notifications  
+- Admin management  
 
-### 3.2 In scope (Phase-1 practical work)
+### Phase-1 (implemented)
 
-- Project proposal documentation (this document)
-- Initial class diagram for all planned entities
-- JSF + Hibernate CRUD for **Tag** and **Workspace**
-- Three validation types and three CSS types
-- Public GitHub repository
-- 5–10 minute Google Vid recording of the proposal and CRUD workflow
+- This proposal document  
+- Initial class model for all entities  
+- JSF + Hibernate CRUD for **Tag** and **Workspace**  
+- Three validation types and three CSS types  
+- Public GitHub repository  
+- 5–10 minute Google Vid (screen + camera)  
 
-### 3.3 Out of scope for Phase-1
+### Out of scope for Phase-1
 
-- Full authentication screens in JSF
-- Page editor, attachments, sharing, and notifications in JSF
-- Production deployment and mobile applications
+- Full login screens in JSF  
+- Page editor, attachments, and sharing in JSF  
+- Production deployment  
 
-Phase-1 stores workspace owner as a name field so the two chosen entities can be demonstrated independently. In the full system, a workspace belongs to a `User`.
+*Note: In Phase-1, workspace owner is stored as a name field. In the full system, a workspace belongs to a User.*
 
 ---
 
 ## 4. AS-IS Model
 
-Today, a student or staff member who wants to keep and share notes follows a fragmented manual process.
-
-```mermaid
-flowchart TD
-    A[User has an idea or class note] --> B{Where to store it?}
-    B --> C[Paper notebook]
-    B --> D[Phone notes app]
-    B --> E[Google Docs / Word file]
-    B --> F[WhatsApp or email]
-    C --> G[Note is local and easy to lose]
-    D --> G
-    E --> H[File is shared as a whole document]
-    F --> I[No structure, no tags, no roles]
-    H --> J[Too much or too little access]
-    G --> K[Hard to search later]
-    I --> K
-    J --> L[Privacy and version problems]
-    K --> M[User wastes time reconstructing information]
-    L --> M
-```
-
-**AS-IS characteristics**
+Today, capturing and sharing notes is fragmented.
 
 | Area | Current practice |
 |---|---|
-| Capture | Notes written in whatever tool is nearest |
+| Capture | Whatever tool is nearest (paper, phone, Docs, chat) |
 | Organization | Folders or none; tags rarely consistent |
 | Search | Manual scrolling or memory |
-| Sharing | Send a copy or share a whole file |
-| Security | Device lock or account password only |
-| Collaboration | Conflicting copies and unclear ownership |
+| Sharing | Send a copy or share an entire file |
+| Security | Device lock or basic account password |
+| Collaboration | Conflicting copies; unclear ownership |
 | Administration | No central view of users or content |
+
+**Flow:** Idea → choose random tool → store locally or send a file → hard to find later → time lost reconstructing information.
 
 ---
 
 ## 5. TO-BE Model
 
-NoteKeeper replaces the scattered process with one authenticated web system.
-
-```mermaid
-flowchart TD
-    A[User opens NoteKeeper] --> B[Login / Register / 2FA]
-    B --> C[Dashboard]
-    C --> D[Select or create Workspace]
-    D --> E[Create or edit Page]
-    E --> F[Add tags, attachments, cover]
-    E --> G[Share page or invite workspace member]
-    G --> H[Role-based permission check]
-    H --> I[Collaborator views or edits]
-    F --> J[Search, favorite, or archive]
-    C --> K[Admin manages users, pages, workspaces]
-    I --> L[Notifications sent]
-    J --> L
-    K --> L
-```
-
-**TO-BE characteristics**
+NoteKeeper provides one web system for capture, organization, and controlled sharing.
 
 | Area | Future practice |
 |---|---|
-| Capture | Pages created inside a workspace |
-| Organization | Workspaces + tags + archive + favorites |
-| Search | Title and content search with filters |
-| Sharing | Controlled page shares and workspace roles |
-| Security | JWT/session auth, hashed passwords, 2FA |
-| Collaboration | One live record instead of file copies |
-| Administration | Dedicated admin screens |
+| Capture | Pages inside a workspace |
+| Organization | Workspaces, tags, favorites, archive |
+| Search | Search with filters |
+| Sharing | Role-based page and workspace access |
+| Security | Authentication, hashed passwords, 2FA |
+| Collaboration | One shared record instead of file copies |
+| Administration | Admin screens for users and content |
 
-Phase-1 TO-BE slice (what is implemented now):
-
-```mermaid
-flowchart LR
-    A[Dashboard] --> B[Tag CRUD]
-    A --> C[Workspace CRUD]
-    A --> S[Search results]
-    B --> D[(PostgreSQL via Hibernate)]
-    C --> D
-    S --> D
-    B --> E[JSF + Bean + Custom validation]
-    C --> E
-```
+**Phase-1 slice:** Dashboard → Tag CRUD / Workspace CRUD / Search → PostgreSQL (Hibernate) → JSF, Bean, and custom validation.
 
 ---
 
 ## 6. Business Requirements
 
-### 6.1 Functional requirements
+### Full system (selected)
 
 | ID | Requirement |
 |---|---|
-| BR-01 | A user must be able to register, log in, reset a password, and optionally enable 2FA. |
-| BR-02 | A user must be able to create and manage workspaces. |
-| BR-03 | A user must be able to create, edit, favorite, archive, and delete pages inside a workspace. |
-| BR-04 | A user must be able to create tags and assign them to pages. |
-| BR-05 | A workspace owner must be able to invite members and assign roles. |
-| BR-06 | A page owner must be able to share a page with view or edit permission. |
-| BR-07 | The system must store attachments linked to a page. |
-| BR-08 | The system must notify users about shares and invitations. |
-| BR-09 | An administrator must manage users, pages, and workspaces. |
-| BR-10 | Invalid data must be rejected through validation before it is saved. |
+| BR-01 | Users can register, log in, reset passwords, and enable 2FA |
+| BR-02 | Users can create and manage workspaces |
+| BR-03 | Users can create, edit, favorite, archive, and delete pages |
+| BR-04 | Users can create tags and assign them to pages |
+| BR-05 | Workspace owners can invite members and assign roles |
+| BR-06 | Page owners can share pages with view or edit permission |
+| BR-07 | Attachments can be linked to pages |
+| BR-08 | Users receive notifications for shares and invitations |
+| BR-09 | Admins can manage users, pages, and workspaces |
+| BR-10 | Invalid data is rejected by validation before save |
 
-### 6.2 Phase-1 functional requirements (implemented)
+### Phase-1 (implemented)
 
 | ID | Requirement | Status |
 |---|---|---|
-| P1-01 | Create, read, update, and delete tags | Implemented |
-| P1-02 | Create, read, update, and delete workspaces | Implemented |
-| P1-03 | Validate tag name and color | Implemented |
-| P1-04 | Validate workspace name, owner, and description | Implemented |
-| P1-05 | Persist records with Hibernate using `hibernate.cfg.xml` | Implemented |
-| P1-06 | Dashboard with live tag and workspace counts | Implemented |
-| P1-07 | Search across tags and workspaces from the top bar | Implemented |
-| P1-08 | Exactly one default workspace; prefer the workspace named Personal | Implemented |
-
-### 6.3 Non-functional / business constraints
-
-- The system should be usable from a standard web browser.
-- Personal notes must remain visible only to authorized users in the full system.
-- Forms must give clear error messages when input is invalid.
-- The Phase-1 prototype must be easy to run locally for demonstration and marking.
+| P1-01 | CRUD for tags | Done |
+| P1-02 | CRUD for workspaces | Done |
+| P1-03 | Validate tag name and color | Done |
+| P1-04 | Validate workspace name, owner, and description | Done |
+| P1-05 | Persist data with Hibernate (`hibernate.cfg.xml`) | Done |
+| P1-06 | Dashboard with live counts | Done |
+| P1-07 | Search across tags and workspaces | Done |
+| P1-08 | One default workspace (prefer **Personal**) | Done |
 
 ---
 
-## 7. Software Qualities Applied in the System
+## 7. Software Qualities
 
-| Quality | How it is applied |
+| Quality | Application |
 |---|---|
-| **Functionality** | CRUD for tags and workspaces; planned modules cover notes, sharing, and admin. |
-| **Usability** | Simple JSF forms, labels, required-field hints, confirm-before-delete, and success/error messages. |
-| **Reliability** | Hibernate transactions with rollback on failure; validation before persist. |
-| **Security** | Full system uses hashed passwords, JWT, 2FA, and role checks. Phase-1 validates input to reduce bad or malicious data. |
-| **Maintainability** | Layered design: model, DAO, bean, validator, and XHTML views. |
-| **Scalability** | Entity model supports many users, workspaces, and pages; later API/database can grow independently of the JSF prototype. |
-| **Portability** | Maven WAR can run on Tomcat 10 / Jakarta EE containers; PostgreSQL is used for persistence. |
-| **Integrity** | Unique tag names, required fields, and reserved workspace names protect data quality. |
-| **Reusability** | Shared CSS, DAO pattern, and validators can be reused for later entities. |
-| **Testability** | DAO operations and validators are isolated from the view, so they can be tested independently. |
-| **Efficiency** | Only required fields are loaded in list screens; PostgreSQL stores Tag and Workspace records. |
-| **Adaptability** | The same entities map to the Spring Boot backend, so the JSF prototype can evolve toward the full product. |
+| Functionality | CRUD for Tag and Workspace; full domain planned |
+| Usability | Clear forms, messages, and confirm-before-delete |
+| Reliability | Transactions with rollback; validation before persist |
+| Security | Full system: auth, hashing, 2FA, roles; Phase-1: input validation |
+| Maintainability | Layers: model, DAO, bean, validator, view |
+| Portability | Maven WAR on Tomcat 10; PostgreSQL |
+| Integrity | Unique names, required fields, reserved workspace names |
+| Reusability | Shared CSS, DAOs, and validators |
+| Testability | DAO and validators separated from the view |
+| Adaptability | Same domain aligns with the Spring Boot backend |
 
 ---
 
-## 8. Initial Class Diagram (All Entities)
+## 8. Initial Class Diagram (Entities)
 
-The full NoteKeeper domain is shown below. Phase-1 implements **Tag** and **Workspace** (workspace owner is a string in the JSF prototype).
+Main entities in the full design:
 
-```mermaid
-classDiagram
-    class User {
-        String id
-        String username
-        String email
-        String password
-        String firstName
-        String lastName
-        String phoneNumber
-        LocalDate dateOfBirth
-        String gender
-        String role
-        Boolean twoFactorEnabled
-        LocalDateTime createdAt
-        LocalDateTime updatedAt
-    }
+**User**, **UserProfile**, **Location**, **Workspace**, **WorkspaceMember**, **Page**, **Tag**, **PageTag**, **PageShare**, **Attachment**, **Notification**, **TwoFactorCode**, **PasswordResetToken**
 
-    class UserProfile {
-        String id
-        String bio
-        String avatarUrl
-        String theme
-        String language
-        LocalDateTime updatedAt
-    }
+Key relationships:
 
-    class Location {
-        String id
-        String name
-        String code
-        LocationType type
-        LocalDateTime createdAt
-    }
+- User owns Workspaces and authors Pages  
+- Workspace contains Pages and WorkspaceMembers  
+- Page links to Tags (via PageTag), Shares, and Attachments  
+- User receives Notifications and uses 2FA / password-reset tokens  
 
-    class Workspace {
-        String id
-        String name
-        String description
-        String icon
-        String ownerName
-        Boolean isDefault
-        LocalDateTime createdAt
-    }
+### Phase-1 entities (implemented)
 
-    class WorkspaceMember {
-        String id
-        WorkspaceRole role
-        LocalDateTime joinedAt
-    }
+**Tag:** id, name, color, createdAt  
 
-    class Page {
-        String id
-        String title
-        String content
-        String icon
-        String coverImage
-        Boolean isFavorite
-        Boolean isArchived
-        LocalDateTime createdAt
-        LocalDateTime updatedAt
-    }
+**Workspace:** id, name, description, icon, ownerName, isDefault, createdAt  
 
-    class Tag {
-        String id
-        String name
-        String color
-        LocalDateTime createdAt
-    }
-
-    class PageTag {
-        String id
-    }
-
-    class PageShare {
-        String id
-        String permission
-        LocalDateTime createdAt
-    }
-
-    class Attachment {
-        String id
-        String fileName
-        String filePath
-        String contentType
-        Long fileSize
-        LocalDateTime uploadedAt
-    }
-
-    class Notification {
-        String id
-        String title
-        String message
-        NotificationType type
-        Boolean isRead
-        LocalDateTime createdAt
-    }
-
-    class TwoFactorCode {
-        String id
-        String code
-        LocalDateTime expiresAt
-        Boolean used
-    }
-
-    class PasswordResetToken {
-        String id
-        String token
-        LocalDateTime expiresAt
-        Boolean used
-    }
-
-    class WorkspaceRole {
-        <<enumeration>>
-        OWNER
-        EDITOR
-        VIEWER
-    }
-
-    class LocationType {
-        <<enumeration>>
-        COUNTRY
-        PROVINCE
-        DISTRICT
-        SECTOR
-        CELL
-        VILLAGE
-    }
-
-    class NotificationType {
-        <<enumeration>>
-        INFO
-        SUCCESS
-        WARNING
-        ERROR
-        SHARE
-        WORKSPACE_INVITE
-    }
-
-    User "1" -- "1" UserProfile : has
-    Location "1" -- "*" User : locates
-    Location "1" -- "*" Location : parent/children
-    User "1" -- "*" Workspace : owns
-    User "1" -- "*" Page : authors
-    User "1" -- "*" WorkspaceMember : membership
-    User "1" -- "*" PageShare : shared with
-    User "1" -- "*" Notification : receives
-    User "1" -- "*" TwoFactorCode : verifies
-    User "1" -- "*" PasswordResetToken : resets
-    User "1" -- "*" Attachment : uploads
-    Workspace "1" -- "*" Page : contains
-    Workspace "1" -- "*" WorkspaceMember : includes
-    WorkspaceMember --> WorkspaceRole
-    Page "1" -- "*" PageTag
-    Tag "1" -- "*" PageTag
-    Page "1" -- "*" PageShare
-    Page "1" -- "*" Attachment
-    Location --> LocationType
-    Notification --> NotificationType
-```
+*(In the full system, Workspace.owner is a User reference instead of ownerName.)*
 
 ---
 
-## 9. Phase-1 Practical Implementation
+## 9. Phase-1 Implementation
 
-### 9.1 Selected entities
+### Selected entities
 
-| Entity | Why it was selected |
+| Entity | Reason |
 |---|---|
-| **Tag** | Small, clear entity with uniqueness and format rules. Good for showing all validation types. |
-| **Workspace** | Core NoteKeeper concept. Shows required fields, length checks, reserved-name custom validation, and list/edit/delete. |
+| **Tag** | Clear rules for uniqueness and color format |
+| **Workspace** | Core product concept; required fields and custom name rules |
 
-### 9.2 CRUD mapping
+### CRUD
 
 | Operation | Tag | Workspace |
 |---|---|---|
-| Create | Save Tag form | Save Workspace form |
-| Read | All Tags table | All Workspaces table |
-| Update | Edit loads the form, then Update | Edit loads the form, then Update |
-| Delete | Delete with confirmation | Delete with confirmation |
+| Create | New tag form | New workspace form |
+| Read | Tags table | Workspaces table |
+| Update | Edit then save | Edit then save |
+| Delete | Confirm then delete | Confirm then delete |
 
-### 9.3 Three types of validation
+### Three validation types
 
-| Type | Where it is applied |
+| Type | Examples |
 |---|---|
-| **1. JSF built-in validators** | `required="true"`, `<f:validateLength>`, `<f:validateRegex>` on the XHTML forms |
-| **2. Bean Validation** | `@NotBlank`, `@Size`, `@Pattern` on `Tag.java` and `Workspace.java` |
-| **3. Custom validators** | `UniqueTagNameValidator`, `HexColorValidator`, `WorkspaceNameValidator` |
+| JSF built-in | `required`, `f:validateLength`, `f:validateRegex` |
+| Bean Validation | `@NotBlank`, `@Size`, `@Pattern` on entities |
+| Custom | UniqueTagNameValidator, HexColorValidator, WorkspaceNameValidator |
 
-### 9.4 Three types of CSS
+### Three CSS types
 
-| Type | Where it is applied |
+| Type | Location |
 |---|---|
-| **External CSS** | `src/main/webapp/resources/css/app.css` included with `<h:outputStylesheet>` in the layout template |
-| **Internal CSS** | `<style>` blocks in the `head` of `tags.xhtml` and `workspaces.xhtml` |
-| **Inline CSS** | `style="..."` on color swatches (`background-color: #{item.color}`) and selected dashboard headings |
+| External | `resources/css/app.css` |
+| Internal | `<style>` in `tags.xhtml` and `workspaces.xhtml` |
+| Inline | Color swatches and selected headings |
 
-### 9.5 Default workspace rule (Phase-1)
+### Default workspace
 
-- A workspace named **Personal** is treated as the default workspace.
-- Only one workspace shows the Default badge at a time.
-- The badge uses a real JSF component (`h:panelGroup` with `rendered="#{item.isDefault}"`), not a plain HTML `span`.
+Only one default workspace is shown. A workspace named **Personal** is preferred. The badge uses `h:panelGroup` with `rendered="#{item.isDefault}"`.
 
-### 9.6 How to run the practical project
+### How to run
 
-Requirements: JDK 17, Maven, and PostgreSQL (`notekeeper_db`). Configure the database password in `src/main/resources/hibernate.cfg.xml`.
+Requirements: JDK 17, Maven, PostgreSQL (`notekeeper_db`). Set the password in `hibernate.cfg.xml`.
 
-```bash
-cd JSF
+```
 mvn clean package cargo:run
 ```
 
-Then open:
-
-- Dashboard: http://localhost:8081/notekeeper-jsf/
-- Tags: http://localhost:8081/notekeeper-jsf/tags.xhtml
-- Workspaces: http://localhost:8081/notekeeper-jsf/workspaces.xhtml
-- Search: use the top search bar, or open http://localhost:8081/notekeeper-jsf/search.xhtml
-
-Sample records are created automatically when the tables are empty.
+- Dashboard: http://localhost:8081/notekeeper-jsf/  
+- Tags: http://localhost:8081/notekeeper-jsf/tags.xhtml  
+- Workspaces: http://localhost:8081/notekeeper-jsf/workspaces.xhtml  
 
 ---
 
 ## 10. Public GitHub Link
 
-**https://github.com/Jess-xca/Notekeeper_JSF**
+https://github.com/Jess-xca/Notekeeper_JSF  
 
-The repository must remain **public** so the lecturer can open the source code without access requests.
+The repository should remain **public** for assessment.
 
 ---
 
-## 11. Video Record (Google Vid)
+## 11. Video (Google Vid)
 
-**Duration:** 5–10 minutes  
-**Required features:** screen recording and camera (picture-in-picture)  
-**Tool:** Google Vid  
-**Link:** `[PASTE GOOGLE VID LINK HERE after recording]`
+| Item | Detail |
+|---|---|
+| Duration | 5–10 minutes |
+| Format | Screen + camera |
+| Tool | Google Vid |
+| Link | *[Paste link here]* |
 
-### Suggested recording script
+**Suggested outline**
 
-1. **0:00–1:00** – Introduce yourself, the project name, and the problem NoteKeeper solves. Show your face with the camera.  
-2. **1:00–3:00** – Walk through this proposal: abstract, problem, scope, AS-IS vs TO-BE, business requirements, and class diagram.  
-3. **3:00–8:00** – Run the JSF app. Show the dashboard, then Tag CRUD: create a valid tag, try invalid data (short name, bad color, duplicate name), then edit and delete. Repeat for Workspace CRUD, including a reserved name such as `admin`, and show that only **Personal** has the Default badge. Briefly show search from the top bar. Point to external, internal, and inline CSS in the browser/source.  
-4. **8:00–10:00** – Show the GitHub repository, summarize future work, and close.
-
-After recording, set the Google Vid sharing permission to anyone with the link, then paste the URL in the field above and in the README.
+1. Introduce yourself and the problem (≈1 min)  
+2. Walk through this proposal (≈2 min)  
+3. Demo Tag and Workspace CRUD, validation, CSS, and search (≈5 min)  
+4. Show GitHub and close (≈1–2 min)  
 
 ---
 
 ## 12. Conclusion
 
-Phase-1 defines NoteKeeper as a structured alternative to scattered personal notes and uncontrolled file sharing. The documentation captures the problem, scope, current and future models, requirements, qualities, and the full entity design. The JSF and Hibernate prototype proves that two core entities can be created, displayed, updated, deleted, and validated with the required presentation techniques. Later phases will connect the remaining entities, authentication, sharing, and administration to complete the product.
+Phase-1 defines NoteKeeper and proves the approach with a JSF and Hibernate CRUD prototype for Tag and Workspace. Later phases will add authentication, pages, sharing, and administration to complete the product.
